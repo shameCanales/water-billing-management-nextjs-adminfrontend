@@ -2,16 +2,25 @@
 import Image from "next/image";
 import FormLabel from "@/components/ui/FormLabel";
 import FormInput from "@/components/ui/FormInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useLogin } from "@/hooks/useLogin";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { authActions } from "@/lib/store/authSlice";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useRouter();
+
+  useEffect(() => {
+    const token = getCookie("admin_token");
+
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [router]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -107,5 +116,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
