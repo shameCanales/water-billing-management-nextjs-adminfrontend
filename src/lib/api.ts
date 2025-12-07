@@ -81,3 +81,7 @@ export const loginUser = async (
 
   return response.data;
 };
+
+export const logoutUser = async (): Promise<void> => {
+  await api.post("/auth/admin/logout");
+};
