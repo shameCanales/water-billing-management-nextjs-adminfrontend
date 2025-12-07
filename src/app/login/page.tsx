@@ -13,8 +13,8 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@test.com");
+  const [password, setPassword] = useState("@Password123");
 
   const { mutate: login, isPending, isError } = useLogin();
 
@@ -107,5 +107,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
