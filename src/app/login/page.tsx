@@ -13,7 +13,7 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const [email, setEmail] = useState("admin@test.com");
+  const [email, setEmail] = useState("admin6@test.com");
   const [password, setPassword] = useState("@Password123");
 
   const { mutate: login, isPending, isError } = useLogin();

@@ -1,5 +1,6 @@
 "use client";
 import SideBarLink from "@/components/ui/SideBarLink";
+import { useGetProfileData } from "@/hooks/useGetProfileData";
 import { useLogout } from "@/hooks/useLogout";
 
 const links = [
@@ -52,9 +53,32 @@ const links = [
 
 export default function SideBar() {
   const { mutate: logout, isPending } = useLogout();
+  const {
+    data: user,
+    isLoading: loadingUser,
+    isError: loadingUserError,
+    error: userError,
+  } = useGetProfileData();
+
+  let profileContent: any = "";
+
+  if (user) {
+    profileContent = (
+      <h1>{`${user?.firstName} ${user?.middleName} ${user?.lastName}`}</h1>
+    );
+  }
+
+  if (loadingUser) {
+    profileContent = <h1>Loading...</h1>;
+  }
+
+  if (loadingUserError) {
+    profileContent = <p>{userError.message}</p>;
+  }
 
   return (
     <div>
+      <div>{profileContent}</div>
       <p>Navigation </p>
       <ul className="grid gap-5 bg-amber-300">
         {links.map((link) => (
