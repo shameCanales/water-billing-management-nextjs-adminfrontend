@@ -6,9 +6,11 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div className="flex h-screen bg-gray-100 overflow-hidden">
       <SideBar />
-      <div>{children}</div>
+      <div className="flex-1 overflow-y-auto p-4 transition-all duration-300">
+        {children}
+      </div>
     </div>
   );
 }

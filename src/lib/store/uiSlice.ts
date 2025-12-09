@@ -1,22 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface InitialUiState {
-  mobileNavIsOpen: boolean;
+  isSidebarExpanded: boolean;
 }
 
 const initialUiState: InitialUiState = {
-  mobileNavIsOpen: false,
+  isSidebarExpanded: false,
 };
 
 export const uiSlice = createSlice({
   name: "ui",
   initialState: initialUiState,
   reducers: {
-    openMobileNav: (state) => {
-      state.mobileNavIsOpen = true;
-    },
-    closeMobileNav: (state) => {
-      state.mobileNavIsOpen = false;
+    toggleSidebar: (state) => {
+      state.isSidebarExpanded = !state.isSidebarExpanded;
     },
   },
 });
