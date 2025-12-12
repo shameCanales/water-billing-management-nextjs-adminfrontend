@@ -1,7 +1,8 @@
 "use client";
 import SideBarLink from "@/components/ui/SideBarLink";
-import { useGetProfileData } from "@/hooks/useGetProfileData";
 import { useLogout } from "@/hooks/useLogout";
+import UserProfile from "./sections/UserProfile";
+import Image from "next/image";
 
 const links = [
   {
@@ -53,34 +54,24 @@ const links = [
 
 export default function SideBar() {
   const { mutate: logout, isPending } = useLogout();
-  const {
-    data: user,
-    isLoading: loadingUser,
-    isError: loadingUserError,
-    error: userError,
-  } = useGetProfileData();
-
-  let profileContent: any = "";
-
-  if (user) {
-    profileContent = (
-      <h1>{`${user?.firstName} ${user?.middleName} ${user?.lastName}`}</h1>
-    );
-  }
-
-  if (loadingUser) {
-    profileContent = <h1>Loading...</h1>;
-  }
-
-  if (loadingUserError) {
-    profileContent = <p>{userError.message}</p>;
-  }
 
   return (
-    <div>
-      <div>{profileContent}</div>
+    <div className="p-3 border-r-stone-300 border-r-1">
+      <div className="flex items-center border-b-stone-900- border-b-2 py-2">
+        <Image
+          className=" bg-blue-700 p-2 rounded-md w-8"
+          src={"/hand-holding-droplet.png"}
+          alt="water billing icon"
+          width="250"
+          height="250"
+        />
+        <p className="font-semibold ml-2">Water Billing</p>
+      </div>
+
+      <UserProfile />
+
       <p>Navigation </p>
-      <ul className="grid gap-5 bg-amber-300">
+      <ul className="grid gap-5 ">
         {links.map((link) => (
           <li key={link.route}>
             <SideBarLink
