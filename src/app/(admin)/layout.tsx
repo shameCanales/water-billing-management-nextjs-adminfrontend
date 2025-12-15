@@ -1,4 +1,5 @@
 import SideBar from "@/components/SideBar";
+import MenuButton from "@/components/ui/MenuButton";
 
 export default async function AdminLayout({
   children,
@@ -9,6 +10,7 @@ export default async function AdminLayout({
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       <SideBar />
       <div className="flex-1 overflow-y-auto p-4 transition-all duration-300">
+        <MenuButton />
         {children}
       </div>
     </div>

@@ -3,6 +3,9 @@ import SideBarLink from "@/components/ui/SideBarLink";
 import { useLogout } from "@/hooks/useLogout";
 import UserProfile from "./sections/UserProfile";
 import Image from "next/image";
+import { AppDispatch, RootState } from "@/lib/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { uiActions } from "@/lib/store/uiSlice";
 
 const links = [
   {
@@ -53,24 +56,47 @@ const links = [
 ];
 
 export default function SideBar() {
+  const dispatch = useDispatch<AppDispatch>();
   const { mutate: logout, isPending } = useLogout();
+  const sidebarIsOpen = useSelector(
+    (state: RootState) => state.ui.mobileSidebarIsOpen
+  );
+
+  function handleCloseNav() {
+    dispatch(uiActions.closeMobileSidebar());
+  }
 
   return (
-    <div className="p-3 border-r-stone-300 border-r-1">
-      <div className="flex items-center border-b-stone-900- border-b-2 py-2">
-        <Image
-          className=" bg-blue-700 p-2 rounded-md w-8"
-          src={"/hand-holding-droplet.png"}
-          alt="water billing icon"
-          width="250"
-          height="250"
-        />
-        <p className="font-semibold ml-2">Water Billing</p>
+    <div
+      className={` w-[250px] p-3 border-r-stone-300  bg-slate-50 ${
+        sidebarIsOpen ? "absolute" : "hidden"
+      }`}
+    >
+      <div className="flex items-center justify-between border-b-stone-900- border-b-2 py-2">
+        <div className="flex items-center">
+          <Image
+            className=" bg-blue-700 p-2 rounded-md w-8"
+            src={"/hand-holding-droplet.png"}
+            alt="water billing icon"
+            width="250"
+            height="250"
+          />
+          <p className="font-semibold ml-2">Water Billing</p>
+        </div>
+
+        <button onClick={() => handleCloseNav()}>
+          <Image
+            className="w-8 "
+            src="/cross-small.png"
+            alt="close nav"
+            width="500"
+            height="500"
+          />
+        </button>
       </div>
 
       <UserProfile />
 
-      <p>Navigation </p>
       <ul className="grid gap-5 ">
         {links.map((link) => (
           <li key={link.route}>
