@@ -13,6 +13,8 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
   const [email, setEmail] = useState("admin6@test.com");
   const [password, setPassword] = useState("@Password123");
 
@@ -45,9 +47,9 @@ export default function LoginPage() {
 
   return (
     <div>
-      <div className="border-t-4 border-t-blue-700 border border-stone-400 w-130 mx-auto mt-35 rounded-xl px-10 pb-10">
+      <div className="border-t-4 border-t-blue-700 border border-stone-200 w-100 mx-auto mt-30 rounded-lg px-8 pb-10 shadow-xl overflow-hidden relative">
         <div className="text-center mt-8">
-          <div className="bg-blue-600 w-20 mx-auto mt-10 p-5 rounded-2xl">
+          <div className="bg-blue-600 w-17 mx-auto mt-8 p-5 rounded-2xl">
             <Image
               src="/hand-holding-droplet.png"
               alt="Logo"
@@ -56,15 +58,15 @@ export default function LoginPage() {
             />
           </div>
 
-          <h1 className="text-3xl mt-8 text-stone-900 ">Welcome Back</h1>
-          <p className="mt-3 text-stone-700">
+          <h1 className="text-3xl mt-10 text-stone-900 ">Welcome Back</h1>
+          <p className="mt-4 text-sm text-stone-500">
             Sign in to access your water billing account
           </p>
         </div>
 
         <form onSubmit={handleSubmitLogin} className="mt-10">
           <div className="grid">
-            <FormLabel htmlFor="email">Email Address</FormLabel>
+            <FormLabel htmlFor="email">Email</FormLabel>
             <FormInput
               type="email"
               value={email}
@@ -72,6 +74,7 @@ export default function LoginPage() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEmail(e.currentTarget.value)
               }
+              placeholder="Enter your email address"
             />
           </div>
 
@@ -84,25 +87,29 @@ export default function LoginPage() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setPassword(e.currentTarget.value)
               }
+              placeholder="Enter your password"
             />
           </div>
 
           <button
             type="submit"
             disabled={isPending}
-            className={`mt-15  text-stone-50 w-full p-4 rounded-md ${
+            className={`mt-15  text-stone-50 w-full py-3.5 px-4 text-sm font-semibold rounded-md ${
               isPending
                 ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-blue-600 hover:bg-blue-600"
             }`}
           >
             {`${isPending ? "Signing in..." : "Sign In"}`}
           </button>
         </form>
 
-        <p className="text-center mt-5 text-stone-600">
-          Don&apos;t have an account? Visit our office to register
-        </p>
+        <div className="mt-10 border-stone-200 bg-stone-100 border py-4 rounded-xl ">
+          <p className="text-center text-xs text-stone-500">
+            Don&apos;t have an account?{" "}
+            <span className="text-blue-600">Visit our office to register</span>
+          </p>
+        </div>
       </div>
     </div>
   );

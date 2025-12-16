@@ -7,7 +7,7 @@ interface InitialUiState {
 
 const initialUiState: InitialUiState = {
   isSidebarExpanded: true,
-  mobileSidebarIsOpen: true,
+  mobileSidebarIsOpen: false,
 };
 
 export const uiSlice = createSlice({

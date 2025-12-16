@@ -1,6 +1,5 @@
 import { getProfileData } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import type { UserProfile } from "@/types/user";
 
 export const useGetProfileData = () => {
   return useQuery({

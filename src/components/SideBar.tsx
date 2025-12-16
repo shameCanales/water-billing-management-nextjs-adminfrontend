@@ -66,6 +66,11 @@ export default function SideBar() {
     dispatch(uiActions.closeMobileSidebar());
   }
 
+  function handleLogout() {
+    dispatch(uiActions.closeMobileSidebar());
+    logout();
+  }
+
   return (
     <div
       className={` w-[250px] p-4 h-full border-r-stone-300  bg-slate-50 ${
@@ -112,7 +117,7 @@ export default function SideBar() {
       <button
         className="font-bold border-t border-slate-400 py-3 pl-2 flex items-center w-full"
         disabled={loggingOut}
-        onClick={() => logout()}
+        onClick={() => handleLogout()}
       >
         <Image
           className="w-4"

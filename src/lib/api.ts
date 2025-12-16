@@ -3,6 +3,7 @@ import type { LoginCredentials, LoginResponse } from "@/types/auth";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import type { APIResponse, UserProfile } from "@/types/user";
 
+
 // 1. Create the Axios Instance para sa interceptor
 export const api = axios.create({
   baseURL: "http://localhost:3001/api",

@@ -7,5 +7,5 @@ type FormLabelProps = {
 };
 
 export default function FormLabel({children, htmlFor}: FormLabelProps){
-  return <label htmlFor={htmlFor}>{children}</label>
+  return <label className="text-sm text-slate-900" htmlFor={htmlFor}>{children}</label>
 }
