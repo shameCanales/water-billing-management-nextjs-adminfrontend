@@ -1,8 +1,8 @@
 import axios from "axios";
-import type { LoginCredentials, LoginResponse } from "@/types/auth";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
+import type { LoginCredentials, LoginResponse } from "@/types/auth";
 import type { APIResponse, UserProfile } from "@/types/user";
-
+import type { Consumer } from "@/types/consumers";
 
 // 1. Create the Axios Instance para sa interceptor
 export const api = axios.create({
@@ -97,6 +97,12 @@ export const logoutUser = async (): Promise<void> => {
 
 export const getProfileData = async () => {
   const response = await api.get<APIResponse<UserProfile>>("/shared/me");
+  return response.data.data;
+};
 
+export const getAllConsumers = async (signal?: AbortSignal) => {
+  const response = await api.get<APIResponse<Consumer[]>>("/consumers", {
+    signal,
+  });
   return response.data.data;
 };
