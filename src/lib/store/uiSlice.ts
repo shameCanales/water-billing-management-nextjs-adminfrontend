@@ -2,12 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface InitialUiState {
   isSidebarExpanded: boolean;
-  mobileSidebarIsOpen: boolean,
+  mobileSidebarIsOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
   isSidebarExpanded: true,
-  mobileSidebarIsOpen: false,
+  mobileSidebarIsOpen: true,
 };
 
 export const uiSlice = createSlice({
@@ -22,7 +22,7 @@ export const uiSlice = createSlice({
     },
     closeMobileSidebar: (state) => {
       state.mobileSidebarIsOpen = false;
-    }
+    },
   },
 });
 

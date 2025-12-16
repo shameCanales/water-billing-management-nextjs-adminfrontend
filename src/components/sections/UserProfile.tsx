@@ -12,7 +12,16 @@ export default function UserProfile() {
 
   if (user) {
     profileContent = (
-      <h1>{`${user?.firstName} ${user?.middleName} ${user?.lastName}`}</h1>
+      <>
+        <div>
+          <div className="bg-green-600 aspect-square rounded-full w-9 ml-2"></div>
+        </div>
+
+        <div className="ml-3">
+          <p className="font-medium">{`${user?.firstName} ${user?.middleName} ${user?.lastName}`}</p>
+          <p className="font-light text-xs text-slate-500">{user?.role}</p>
+        </div>
+      </>
     );
   }
 
@@ -24,14 +33,8 @@ export default function UserProfile() {
     profileContent = <p>{userError.message}</p>;
   }
   return (
-    <div className="flex items-center mt-3">
-      <div>
-        <div className="bg-green-600 aspect-square rounded-full w-6"></div>
-      </div>
-      <div>
-        <p>{`${user?.firstName} ${user?.middleName} ${user?.lastName}`}</p>
-        <p>{user?.role}</p>
-      </div>
+    <div className="flex items-center mt-3 border-y-slate-300 border-y py-4">
+      {profileContent}
     </div>
   );
 }

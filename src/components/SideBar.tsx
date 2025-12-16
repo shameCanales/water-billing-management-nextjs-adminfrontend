@@ -57,7 +57,7 @@ const links = [
 
 export default function SideBar() {
   const dispatch = useDispatch<AppDispatch>();
-  const { mutate: logout, isPending } = useLogout();
+  const { mutate: logout, isPending: loggingOut } = useLogout();
   const sidebarIsOpen = useSelector(
     (state: RootState) => state.ui.mobileSidebarIsOpen
   );
@@ -68,11 +68,11 @@ export default function SideBar() {
 
   return (
     <div
-      className={` w-[250px] p-3 border-r-stone-300  bg-slate-50 ${
+      className={` w-[250px] p-4 h-full border-r-stone-300  bg-slate-50 ${
         sidebarIsOpen ? "absolute" : "hidden"
       }`}
     >
-      <div className="flex items-center justify-between border-b-stone-900- border-b-2 py-2">
+      <div className="flex items-center justify-between mt-3">
         <div className="flex items-center">
           <Image
             className=" bg-blue-700 p-2 rounded-md w-8"
@@ -81,7 +81,7 @@ export default function SideBar() {
             width="250"
             height="250"
           />
-          <p className="font-semibold ml-2">Water Billing</p>
+          <p className="font-semibold ml-2 ">Water Billing</p>
         </div>
 
         <button onClick={() => handleCloseNav()}>
@@ -97,7 +97,7 @@ export default function SideBar() {
 
       <UserProfile />
 
-      <ul className="grid gap-5 ">
+      <ul className="grid py-4">
         {links.map((link) => (
           <li key={link.route}>
             <SideBarLink
@@ -108,12 +108,20 @@ export default function SideBar() {
           </li>
         ))}
       </ul>
+
       <button
-        className="font-bold border-2 p-1 px-4 rounded-md"
-        disabled={isPending}
+        className="font-bold border-t border-slate-400 py-3 pl-2 flex items-center w-full"
+        disabled={loggingOut}
         onClick={() => logout()}
       >
-        Logout
+        <Image
+          className="w-4"
+          src="/exit.png"
+          alt="logout button"
+          width={500}
+          height={500}
+        />
+        <p className="text-red-700 ml-3">Logout</p>
       </button>
     </div>
   );
