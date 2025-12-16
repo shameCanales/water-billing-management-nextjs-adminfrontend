@@ -80,11 +80,18 @@ export const loginUser = async (
     credentials
   );
 
+  const accessToken = response.data.accessToken;
+  setCookie("admin_token", accessToken, { maxAge: 15 * 60 });
+
   return response.data;
 };
 
 export const logoutUser = async (): Promise<void> => {
-  await api.post("/auth/admin/logout");
+  try {
+    await api.post("/auth/admin/logout");
+  } finally {
+    deleteCookie("admin_token");
+  }
 };
 
 export const getProfileData = async () => {

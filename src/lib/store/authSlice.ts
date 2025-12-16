@@ -3,12 +3,12 @@ import type { User } from "@/types/auth";
 
 interface AuthState {
   user: User | null;
-  token: string | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  token: null,
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
@@ -19,12 +19,12 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<{ user: User; token: string }>
     ) {
+      state.isAuthenticated = true;
       state.user = action.payload.user;
-      state.token = action.payload.token;
     },
     logout(state) {
+      state.isAuthenticated = false;
       state.user = null;
-      state.token = null;
     },
   },
 });

@@ -17,4 +17,4 @@ export default async function AdminLayout({
   );
 }
 
-// we did login check here but removed because we already have it in the middleware
+// we did login check here but removed because we already have it in the middleware/interceptor
