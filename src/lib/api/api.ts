@@ -2,7 +2,11 @@ import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import type { LoginCredentials, LoginResponse } from "@/types/auth";
 import type { APIResponse, UserProfile } from "@/types/user";
-import type { Consumer } from "@/types/consumers";
+import type {
+  Consumer,
+  ConsumerQueryParams,
+  PaginatedConsumerResult,
+} from "@/types/consumers";
 
 // 1. Create the Axios Instance para sa interceptor
 export const api = axios.create({
@@ -100,9 +104,3 @@ export const getProfileData = async () => {
   return response.data.data;
 };
 
-export const getAllConsumers = async (signal?: AbortSignal) => {
-  const response = await api.get<APIResponse<Consumer[]>>("/consumers", {
-    signal,
-  });
-  return response.data.data;
-};

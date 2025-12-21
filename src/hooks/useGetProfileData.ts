@@ -1,4 +1,4 @@
-import { getProfileData } from "@/lib/api";
+import { getProfileData } from "@/lib/api/api";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetProfileData = () => {

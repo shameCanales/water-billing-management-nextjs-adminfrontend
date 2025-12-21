@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { logoutUser } from "@/lib/api";
+import { logoutUser } from "@/lib/api/api";
 import { deleteCookie } from "cookies-next";
 import { authActions } from "@/lib/store/authSlice";
 
