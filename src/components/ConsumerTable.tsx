@@ -55,7 +55,7 @@ export default function ConsumerTable() {
    */
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 15,
   });
 
   /**
@@ -79,12 +79,7 @@ export default function ConsumerTable() {
   // ==========================================
   // 2. DATA FETCHING (React Query)
   // ==========================================
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-  } = useGetAllConsumers({
+  const { data, isLoading, isError, error } = useGetAllConsumers({
     // Convert 0-based index to 1-based for the Backend
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
@@ -153,14 +148,11 @@ export default function ConsumerTable() {
 
   return (
     <div className="space-y-6 font-sans mt-8">
-     
-
       {/* TOOLBAR SECTION
         Contains: Search Bar, Status Filter, and Add Button
       */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          
           {/* Search Input (Styled gray background) */}
           <div className="relative w-full sm:w-[320px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -197,8 +189,8 @@ export default function ConsumerTable() {
         </button>
       </div>
 
-      {/* TABLE CONTAINER 
-      */}
+      {/* TABLE CONTAINER
+       */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden min-h-[400px]">
         {isLoading ? (
           // Loading Skeleton
@@ -322,6 +314,7 @@ export default function ConsumerTable() {
               value={table.getState().pagination.pageSize}
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value));
+                table.setPageIndex(0); // ✅ Best Practice: Reset to page 1 to avoid empty views
               }}
               className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
             >

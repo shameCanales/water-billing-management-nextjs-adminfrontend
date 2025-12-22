@@ -4,7 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Consumer } from "@/types/consumers";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Info } from "lucide-react";
-import { ActionMenu } from "./ActionMenu";
+import { ActionMenuItem, ActionMenu } from "./ActionMenu";
+import { Eye, Edit, UserX, Trash2 } from "lucide-react";
 
 // CHANGED: Export a function instead of a constant array
 export const getColumns = (
@@ -13,7 +14,7 @@ export const getColumns = (
 ): ColumnDef<Consumer>[] => [
   {
     accessorKey: "lastName", // should match from data fields received from api?
-    header: "Name", 
+    header: "Name",
     cell: ({ row }) => (
       <div className="font-medium text-gray-900">
         {row.original.firstName}{" "}
@@ -58,7 +59,15 @@ export const getColumns = (
     header: "Registered",
     cell: ({ getValue }) => {
       const date = new Date(getValue() as string);
-      return <span className="text-gray-600">{date.toLocaleDateString()}</span>;
+      return (
+        <span className="text-gray-600">
+          {new Intl.DateTimeFormat("en-Us", {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+          }).format(date)}
+        </span>
+      );
     },
   },
   {
@@ -84,7 +93,36 @@ export const getColumns = (
           }}
           // 3. Logic to Close
           onClose={() => setOpenMenuId(null)}
-        />
+        >
+          {/* ✅ Specific Actions defined here using the reusable wrapper */}
+          <ActionMenuItem
+            className="text-gray-700"
+            onClick={() => console.log("View", row.original._id)}
+          >
+            <Eye size={14} /> View Details
+          </ActionMenuItem>
+
+          <ActionMenuItem
+            className="text-gray-700"
+            onClick={() => console.log("Edit", row.original._id)}
+          >
+            <Edit size={14} /> Edit Consumer
+          </ActionMenuItem>
+
+          <ActionMenuItem
+            className="text-gray-700"
+            onClick={() => console.log("Suspend", row.original._id)}
+          >
+            <UserX size={14} /> Suspend Account
+          </ActionMenuItem>
+
+          <ActionMenuItem
+            className="text-red-600 hover:bg-red-50"
+            onClick={() => console.log("Delete", row.original._id)}
+          >
+            <Trash2 size={14} /> Delete Consumer
+          </ActionMenuItem>
+        </ActionMenu>
       </div>
     ),
   },
