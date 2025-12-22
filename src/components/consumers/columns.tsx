@@ -12,11 +12,13 @@ export const getColumns = (
   setOpenMenuId: (id: string | null) => void
 ): ColumnDef<Consumer>[] => [
   {
-    accessorKey: "lastName",
-    header: "Name",
+    accessorKey: "lastName", // should match from data fields received from api?
+    header: "Name", 
     cell: ({ row }) => (
       <div className="font-medium text-gray-900">
-        {row.original.firstName} {row.original.lastName}
+        {row.original.firstName}{" "}
+        {row.original.middleName ? row.original.middleName : ""}{" "}
+        {row.original.lastName}
       </div>
     ),
   },

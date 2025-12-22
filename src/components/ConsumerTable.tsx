@@ -21,10 +21,6 @@ import {
 } from "lucide-react";
 import { getColumns } from "./consumers/columns";
 
-/**
- * Type definition for the Status Filter.
- * This ensures strict typing when passing values to the API.
- */
 type StatusFilterType = "active" | "suspended" | "all" | "";
 
 export default function ConsumerTable() {
