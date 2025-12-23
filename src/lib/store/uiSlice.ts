@@ -3,11 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 interface InitialUiState {
   isSidebarExpanded: boolean;
   mobileSidebarIsOpen: boolean;
+  addConsumerModalIsOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
   isSidebarExpanded: true,
   mobileSidebarIsOpen: false,
+  addConsumerModalIsOpen: false,
 };
 
 export const uiSlice = createSlice({
@@ -22,6 +24,12 @@ export const uiSlice = createSlice({
     },
     closeMobileSidebar: (state) => {
       state.mobileSidebarIsOpen = false;
+    },
+    openAddConsumerModal: (state) => {
+      state.addConsumerModalIsOpen = true;
+    },
+    closeAddConsumerModal: (state) => {
+      state.addConsumerModalIsOpen = false;
     },
   },
 });

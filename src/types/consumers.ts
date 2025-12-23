@@ -36,14 +36,35 @@ export interface ConsumerQueryParams {
   sortOrder?: "asc" | "desc";
 }
 
+
+//Create Consumer Interfaces
 export interface CreateConsumerData {
   firstName: string;
   middleName?: string;
   lastName: string;
   email: string;
-  mobileNumber: string;
-  address: string;
   birthDate: string; // YYYY-MM-DD
-  status: "active" | "suspended";
+  mobileNumber: string;
   password: string;
+  address: string;
+  status: "active" | "suspended";
+}
+
+export interface CreateConsumerResponse {
+  success: boolean;
+  message: string;
+  data: {
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    email: string;
+    birthDate: string; // YYYY-MM-DD
+    mobileNumber: string;
+    address: string;
+    status: "active" | "suspended";
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
 }

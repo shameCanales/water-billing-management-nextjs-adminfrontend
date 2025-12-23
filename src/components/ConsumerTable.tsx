@@ -20,10 +20,19 @@ import {
   Plus,
 } from "lucide-react";
 import { getColumns } from "./consumers/columns";
+import AddConsumerModal from "./consumers/AddConsumerModal";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store/store";
+import { uiActions } from "@/lib/store/uiSlice";
 
 type StatusFilterType = "active" | "suspended" | "all" | "";
 
 export default function ConsumerTable() {
+  const dispatch = useDispatch<AppDispatch>();
+  const isAddModalOpen = useSelector(
+    (state: RootState) => state.ui.addConsumerModalIsOpen
+  );
+
   // ==========================================
   // 1. STATE MANAGEMENT
   // ==========================================
@@ -148,6 +157,8 @@ export default function ConsumerTable() {
 
   return (
     <div className="space-y-6 font-sans mt-8">
+      {isAddModalOpen && <AddConsumerModal />}
+
       {/* TOOLBAR SECTION
         Contains: Search Bar, Status Filter, and Add Button
       */}
@@ -183,7 +194,10 @@ export default function ConsumerTable() {
         </div>
 
         {/* Add Consumer Button (Blue) */}
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm w-full sm:w-auto justify-center">
+        <button
+          onClick={() => dispatch(uiActions.openAddConsumerModal())}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm w-full sm:w-auto justify-center"
+        >
           <Plus size={18} />
           Add Consumer
         </button>
