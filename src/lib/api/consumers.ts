@@ -3,6 +3,7 @@ import { APIResponse } from "@/types/user";
 import {
   ConsumerQueryParams,
   PaginatedConsumerResult,
+  CreateConsumerData,
 } from "@/types/consumers";
 
 export const getAllConsumers = async (
@@ -17,4 +18,9 @@ export const getAllConsumers = async (
     }
   );
   return response.data.data;
+};
+
+export const addConsumer = async (data: CreateConsumerData) => {
+  const response = await api.post("/consumers", data);
+  return response.data;
 };

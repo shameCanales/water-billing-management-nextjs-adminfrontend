@@ -35,3 +35,15 @@ export interface ConsumerQueryParams {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
+
+export interface CreateConsumerData {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  email: string;
+  mobileNumber: string;
+  address: string;
+  birthDate: string; // YYYY-MM-DD
+  status: "active" | "suspended";
+  password: string;
+}
