@@ -157,7 +157,8 @@ export default function ConsumerTable() {
 
   return (
     <div className="space-y-6 font-sans mt-8">
-      {isAddModalOpen && <AddConsumerModal />}
+      <AddConsumerModal />
+      {/* {isAddModalOpen && <AddConsumerModal />} */}
 
       {/* TOOLBAR SECTION
         Contains: Search Bar, Status Filter, and Add Button
