@@ -1,4 +1,4 @@
-import { useAddConsumer } from "@/hooks/useAddConsumer";
+import { useAddConsumer } from "@/hooks/consumers/useAddConsumer";
 import { RootState } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
 import { zodResolver } from "@hookform/resolvers/zod";

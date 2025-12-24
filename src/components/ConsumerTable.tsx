@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetAllConsumers } from "@/hooks/useGetAllConsumers";
+import { useGetAllConsumers } from "@/hooks/consumers/useGetAllConsumers";
 import { useState, useEffect, useMemo } from "react";
 import {
   useReactTable,

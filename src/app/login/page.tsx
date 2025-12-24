@@ -5,7 +5,7 @@ import FormInput from "@/components/ui/FormInput";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { useLogin } from "@/hooks/useLogin";
+import { useLogin } from "@/hooks/auth/useLogin";
 import { setCookie } from "cookies-next";
 import { authActions } from "@/lib/store/authSlice";
 

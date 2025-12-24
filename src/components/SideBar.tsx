@@ -1,6 +1,6 @@
 "use client";
 import SideBarLink from "@/components/ui/SideBarLink";
-import { useLogout } from "@/hooks/useLogout";
+import { useLogout } from "@/hooks/auth/useLogout";
 import UserProfile from "./sections/UserProfile";
 import Image from "next/image";
 import { AppDispatch, RootState } from "@/lib/store/store";

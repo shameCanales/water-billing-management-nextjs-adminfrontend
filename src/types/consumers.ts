@@ -36,7 +36,6 @@ export interface ConsumerQueryParams {
   sortOrder?: "asc" | "desc";
 }
 
-
 //Create Consumer Interfaces
 export interface CreateConsumerData {
   firstName: string;
@@ -67,4 +66,23 @@ export interface CreateConsumerResponse {
     updatedAt: string;
     __v: number;
   };
+}
+
+// Edit Consumer Interface
+export interface EditConsumerData {
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  email?: string;
+  birthDate?: string; // YYYY-MM-DD
+  mobileNumber?: string;
+  password?: string;
+  address?: string;
+  status?: "active" | "suspended";
+}
+
+export interface EditConsumerResponse {
+  success: boolean;
+  message: string;
+  data: Consumer;
 }
