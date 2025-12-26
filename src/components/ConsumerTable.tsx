@@ -24,13 +24,15 @@ import AddConsumerModal from "./consumers/AddConsumerModal";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
+import { Consumer } from "@/types/consumers";
+import EditConsumerModal from "./consumers/EditConsumerModal";
 
 type StatusFilterType = "active" | "suspended" | "all" | "";
 
 export default function ConsumerTable() {
   const dispatch = useDispatch<AppDispatch>();
-  const isAddModalOpen = useSelector(
-    (state: RootState) => state.ui.addConsumerModalIsOpen
+  const [selectedConsumer, setSelectedConsumer] = useState<Consumer | null>(
+    null
   );
 
   // ==========================================
@@ -116,8 +118,14 @@ export default function ConsumerTable() {
    * useMemo ensures we don't re-create the columns on every render, only when
    * the open menu changes.
    */
+
+  const handleEditClick = (consumer: Consumer) => {
+    setSelectedConsumer(consumer);
+    dispatch(uiActions.openEditConsumerModal()); // Open the modal via Redux
+  };
+
   const columns = useMemo(
-    () => getColumns(openMenuRowId, setOpenMenuRowId),
+    () => getColumns(openMenuRowId, setOpenMenuRowId, handleEditClick),
     [openMenuRowId] // Dependency: Recalculate columns if this ID changes
   );
 
@@ -155,10 +163,15 @@ export default function ConsumerTable() {
     );
   }
 
+  // const handleEditClick = (consumer: Consumer) => {
+  //   setSelectedConsumer(consumer);
+  //   dispatch(uiActions.openEditConsumerModal()); // Open the modal via Redux
+  // };
+
   return (
     <div className="space-y-6 font-sans mt-8">
       <AddConsumerModal />
-      {/* {isAddModalOpen && <AddConsumerModal />} */}
+      <EditConsumerModal consumerToEdit={selectedConsumer} />
 
       {/* TOOLBAR SECTION
         Contains: Search Bar, Status Filter, and Add Button

@@ -10,7 +10,8 @@ import { Eye, Edit, UserX, Trash2 } from "lucide-react";
 // CHANGED: Export a function instead of a constant array
 export const getColumns = (
   openMenuId: string | null,
-  setOpenMenuId: (id: string | null) => void
+  setOpenMenuId: (id: string | null) => void,
+  onEdit: (consumer: Consumer) => void
 ): ColumnDef<Consumer>[] => [
   {
     accessorKey: "lastName", // should match from data fields received from api?
@@ -104,7 +105,11 @@ export const getColumns = (
 
           <ActionMenuItem
             className="text-gray-700"
-            onClick={() => console.log("Edit", row.original._id)}
+            onClick={() => {
+              // Call the handler passed from parent
+              onEdit(row.original);
+              setOpenMenuId(null); // Close menu
+            }}
           >
             <Edit size={14} /> Edit Consumer
           </ActionMenuItem>

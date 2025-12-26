@@ -4,12 +4,14 @@ interface InitialUiState {
   isSidebarExpanded: boolean;
   mobileSidebarIsOpen: boolean;
   addConsumerModalIsOpen: boolean;
+  editConsumerModalIsOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
   isSidebarExpanded: true,
   mobileSidebarIsOpen: false,
   addConsumerModalIsOpen: false,
+  editConsumerModalIsOpen: false,
 };
 
 export const uiSlice = createSlice({
@@ -30,6 +32,12 @@ export const uiSlice = createSlice({
     },
     closeAddConsumerModal: (state) => {
       state.addConsumerModalIsOpen = false;
+    },
+    openEditConsumerModal: (state) => {
+      state.editConsumerModalIsOpen = true;
+    },
+    closeEditConsumerModal: (state) => {
+      state.editConsumerModalIsOpen = false;
     },
   },
 });
