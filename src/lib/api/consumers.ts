@@ -37,3 +37,20 @@ export const editConsumer = async (
   const response = await api.patch(`/consumers/${id}`, data);
   return response.data;
 };
+
+export const deleteConsumer = async (
+  id: string
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
+  const response = await api.delete(`/consumers/${id}`);
+  return response.data;
+};
+
+// delete
+// http://localhost:3001/api/consumers/69352e94a7405d4021e9b5ef
+// {
+//     "success": true,
+//     "message": "Consumer deleted successfully"
+// }
