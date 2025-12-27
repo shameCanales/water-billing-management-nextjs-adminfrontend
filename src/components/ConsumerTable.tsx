@@ -94,7 +94,7 @@ export default function ConsumerTable() {
     // Convert 0-based index to 1-based for the Backend
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
-    search: debouncedSearch,
+    search: debouncedSearch, // run if changes (after debounce)
     // Logic: If filter is empty or 'all', send undefined (removes param from URL).
     status:
       statusFilter === "" || statusFilter === "all" ? undefined : statusFilter,
@@ -124,9 +124,10 @@ export default function ConsumerTable() {
     dispatch(uiActions.openEditConsumerModal()); // Open the modal via Redux
   };
 
+  // You are using useMemo here. This is a performance trick. It says: "Only re-create this column definition if openMenuRowId changes." If you didn't do this, the table logic would reset every time you typed a letter in the search bar.s
   const columns = useMemo(
     () => getColumns(openMenuRowId, setOpenMenuRowId, handleEditClick),
-    [openMenuRowId] // Dependency: Recalculate columns if this ID changes
+    [openMenuRowId]
   );
 
   const table = useReactTable({
@@ -229,7 +230,7 @@ export default function ConsumerTable() {
           </div>
         ) : (
           <>
-            {/* DESKTOP VIEW 
+            {/* DESKTOP VIEW
               Hidden on small screens (md:block)
             */}
             <div className="hidden md:block overflow-x-auto">
@@ -300,7 +301,7 @@ export default function ConsumerTable() {
               </table>
             </div>
 
-            {/* MOBILE VIEW (Cards) 
+            {/* MOBILE VIEW (Cards)
                Shown only on small screens (md:hidden)
             */}
             <div className="md:hidden divide-y divide-gray-100">
@@ -327,7 +328,7 @@ export default function ConsumerTable() {
           </>
         )}
 
-        {/* PAGINATION FOOTER 
+        {/* PAGINATION FOOTER
           Contains "Showing X results", Limit Dropdown, and Nav Buttons
         */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white">
