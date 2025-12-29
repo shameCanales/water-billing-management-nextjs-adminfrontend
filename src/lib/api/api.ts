@@ -42,7 +42,7 @@ api.interceptors.response.use(
       try {
         // A. Call the refresh endpoint
         // We assume your backend reads the Refresh Token from the HttpOnly cookie automatically
-        const { data } = await axios.get<LoginResponse>(
+        const { data } = await axios.post<LoginResponse>(
           "http://localhost:3001/api/auth/admin/refresh",
           { withCredentials: true }
         );
