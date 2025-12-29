@@ -11,7 +11,8 @@ import { Eye, Edit, UserX, Trash2 } from "lucide-react";
 export const getColumns = (
   openMenuId: string | null,
   setOpenMenuId: (id: string | null) => void,
-  onEdit: (consumer: Consumer) => void
+  onEdit: (consumer: Consumer) => void,
+  onDelete: (consumer: Consumer) => void
 ): ColumnDef<Consumer>[] => [
   {
     accessorKey: "lastName", // should match from data fields received from api?
@@ -123,7 +124,10 @@ export const getColumns = (
 
           <ActionMenuItem
             className="text-red-600 hover:bg-red-50"
-            onClick={() => console.log("Delete", row.original._id)}
+            onClick={() => {
+              onDelete(row.original); // Trigger the Delete Handler
+              setOpenMenuId(null);
+            }}
           >
             <Trash2 size={14} /> Delete Consumer
           </ActionMenuItem>

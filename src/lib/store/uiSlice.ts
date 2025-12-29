@@ -1,3 +1,4 @@
+import DeleteConsumerModal from "@/components/consumers/DeleteConsumerModal";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface InitialUiState {
@@ -5,6 +6,7 @@ interface InitialUiState {
   mobileSidebarIsOpen: boolean;
   addConsumerModalIsOpen: boolean;
   editConsumerModalIsOpen: boolean;
+  deleteConsumerModalIsOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
@@ -12,6 +14,7 @@ const initialUiState: InitialUiState = {
   mobileSidebarIsOpen: false,
   addConsumerModalIsOpen: false,
   editConsumerModalIsOpen: false,
+  deleteConsumerModalIsOpen: false,
 };
 
 export const uiSlice = createSlice({
@@ -38,6 +41,12 @@ export const uiSlice = createSlice({
     },
     closeEditConsumerModal: (state) => {
       state.editConsumerModalIsOpen = false;
+    },
+    openDeleteConsumerModal: (state) => {
+      state.deleteConsumerModalIsOpen = true;
+    },
+    closeDeleteConsumerModal: (state) => {
+      state.deleteConsumerModalIsOpen = false;
     },
   },
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetAllConsumers } from "@/hooks/consumers/useGetAllConsumers";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -26,6 +26,7 @@ import { AppDispatch, RootState } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
 import { Consumer } from "@/types/consumers";
 import EditConsumerModal from "./consumers/EditConsumerModal";
+import DeleteConsumerModal from "./consumers/DeleteConsumerModal";
 
 type StatusFilterType = "active" | "suspended" | "all" | "";
 
@@ -119,15 +120,32 @@ export default function ConsumerTable() {
    * the open menu changes.
    */
 
-  const handleEditClick = (consumer: Consumer) => {
-    setSelectedConsumer(consumer);
-    dispatch(uiActions.openEditConsumerModal()); // Open the modal via Redux
-  };
+  const handleEditClick = useCallback(
+    (consumer: Consumer) => {
+      setSelectedConsumer(consumer);
+      dispatch(uiActions.openEditConsumerModal()); // Open the modal via Redux
+    },
+    [dispatch]
+  );
+
+  const handleDeleteClick = useCallback(
+    (consumer: Consumer) => {
+      setSelectedConsumer(consumer);
+      dispatch(uiActions.openDeleteConsumerModal()); // You need to add this to Redux uiSlice
+    },
+    [dispatch]
+  );
 
   // You are using useMemo here. This is a performance trick. It says: "Only re-create this column definition if openMenuRowId changes." If you didn't do this, the table logic would reset every time you typed a letter in the search bar.s
   const columns = useMemo(
-    () => getColumns(openMenuRowId, setOpenMenuRowId, handleEditClick),
-    [openMenuRowId]
+    () =>
+      getColumns(
+        openMenuRowId,
+        setOpenMenuRowId,
+        handleEditClick,
+        handleDeleteClick
+      ),
+    [openMenuRowId, handleDeleteClick, handleEditClick]
   );
 
   const table = useReactTable({
@@ -173,6 +191,7 @@ export default function ConsumerTable() {
     <div className="space-y-6 font-sans mt-8">
       <AddConsumerModal />
       <EditConsumerModal consumerToEdit={selectedConsumer} />
+      <DeleteConsumerModal consumerToDelete={selectedConsumer} />
 
       {/* TOOLBAR SECTION
         Contains: Search Bar, Status Filter, and Add Button
