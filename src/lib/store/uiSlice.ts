@@ -1,4 +1,3 @@
-import DeleteConsumerModal from "@/components/consumers/DeleteConsumerModal";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface InitialUiState {
@@ -21,15 +20,17 @@ export const uiSlice = createSlice({
   name: "ui",
   initialState: initialUiState,
   reducers: {
-    expandSidebar: (state) => {
+    toggleExpandSidebar: (state) => {
       state.isSidebarExpanded = !state.isSidebarExpanded;
     },
+    // Mobile Sidebar
     openMobileSidebar: (state) => {
       state.mobileSidebarIsOpen = true;
     },
     closeMobileSidebar: (state) => {
       state.mobileSidebarIsOpen = false;
     },
+    // consumer modals
     openAddConsumerModal: (state) => {
       state.addConsumerModalIsOpen = true;
     },

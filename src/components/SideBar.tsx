@@ -6,6 +6,7 @@ import Image from "next/image";
 import { AppDispatch, RootState } from "@/lib/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "@/lib/store/uiSlice";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 const links = [
   {
@@ -58,8 +59,13 @@ const links = [
 export default function SideBar() {
   const dispatch = useDispatch<AppDispatch>();
   const { mutate: logout, isPending: loggingOut } = useLogout();
-  const sidebarIsOpen = useSelector(
+
+  const mobileSidebarIsOpen = useSelector(
     (state: RootState) => state.ui.mobileSidebarIsOpen
+  );
+
+  const sidebarIsExpanded = useSelector(
+    (state: RootState) => state.ui.isSidebarExpanded
   );
 
   function handleCloseNav() {
@@ -71,25 +77,43 @@ export default function SideBar() {
     logout();
   }
 
+  function handleToggleExpandSidebar() {
+    dispatch(uiActions.toggleExpandSidebar());
+  }
+
   return (
     <div
-      className={` w-[250px] p-4 h-full border-r-stone-300  bg-slate-50 ${
-        sidebarIsOpen ? "absolute" : "hidden"
-      }`}
+      className={` ${
+        sidebarIsExpanded ? "w-[250px]" : "w-auto"
+      } p-4 h-full border-r-stone-300 bg-slate-50 z-50 ${
+        mobileSidebarIsOpen ? "block" : "hidden"
+      } xl:block`}
     >
-      <div className="flex items-center justify-between mt-3">
-        <div className="flex items-center">
-          <Image
-            className=" bg-blue-700 p-2 rounded-md w-8"
-            src={"/hand-holding-droplet.png"}
-            alt="water billing icon"
-            width="250"
-            height="250"
-          />
-          <p className="font-semibold ml-2 ">Water Billing</p>
+      <button onClick={() => handleToggleExpandSidebar()}>
+        {sidebarIsExpanded ? <PanelLeftClose /> : <PanelLeftOpen />}
+      </button>
+
+      <div
+        className={`flex items-center ${
+          sidebarIsExpanded ? "justify-between" : "justify-center"
+        } mt-3`}
+      >
+        <div>
+          <div className="flex items-center ">
+            <Image
+              className=" bg-blue-700 p-2 rounded-md w-8"
+              src={"/hand-holding-droplet.png"}
+              alt="water billing icon"
+              width="250"
+              height="250"
+            />
+            {sidebarIsExpanded && (
+              <p className="font-semibold ml-4 ">Water Billing</p>
+            )}
+          </div>
         </div>
 
-        <button onClick={() => handleCloseNav()}>
+        <button className="xl:hidden" onClick={() => handleCloseNav()}>
           <Image
             className="w-8 "
             src="/cross-small.png"
@@ -115,7 +139,9 @@ export default function SideBar() {
       </ul>
 
       <button
-        className="font-bold border-t border-slate-400 py-3 pl-2 flex items-center w-full"
+        className={`font-bold border-t border-slate-400 py-3 flex items-center ${
+          sidebarIsExpanded ? "ml-2" : "justify-center "
+        } w-full`}
         disabled={loggingOut}
         onClick={() => handleLogout()}
       >
@@ -126,7 +152,7 @@ export default function SideBar() {
           width={500}
           height={500}
         />
-        <p className="text-red-700 ml-3">Logout</p>
+        {sidebarIsExpanded && <p className="text-red-700 ml-3">Logout</p>}
       </button>
     </div>
   );

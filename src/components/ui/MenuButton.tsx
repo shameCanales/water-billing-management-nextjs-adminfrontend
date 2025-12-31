@@ -13,7 +13,7 @@ export default function MenuButton() {
   }
 
   return (
-    <button onClick={() => handleOpenNav()}>
+    <button className="xl:hidden" onClick={() => handleOpenNav()}>
       <Image
         className="w-8 mb-5"
         src="/apps-add.png"

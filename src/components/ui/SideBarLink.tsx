@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store/store";
 
 interface SideBarLinkProps {
   route: string;
@@ -12,11 +14,16 @@ interface SideBarLinkProps {
 export default function SideBarLink({ route, label, icon }: SideBarLinkProps) {
   const pathName = usePathname();
   const isActive = pathName === route;
+  const sidebarIsExpanded = useSelector(
+    (state: RootState) => state.ui.isSidebarExpanded
+  );
 
   return (
     <Link
       href={route}
-      className={`flex items-center rounded-md p-2 ${
+      className={`flex items-center ${
+        sidebarIsExpanded ? "" : "justify-center"
+      } rounded-md p-2 ${
         isActive ? "font-semibold bg-indigo-600 text-stone-50" : ""
       }`}
     >
@@ -27,7 +34,7 @@ export default function SideBarLink({ route, label, icon }: SideBarLinkProps) {
         width={20}
         height={20}
       />
-      <p className="ml-3 text-sm">{label}</p>
+      {sidebarIsExpanded && <p className="ml-3 text-sm">{label}</p>}
     </Link>
   );
 }
