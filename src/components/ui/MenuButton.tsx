@@ -13,10 +13,13 @@ export default function MenuButton() {
   }
 
   return (
-    <button className="xl:hidden" onClick={() => handleOpenNav()}>
+    <button
+      className="xl:hidden border-slate-300 border-2 mb-5 p-2 rounded-md"
+      onClick={() => handleOpenNav()}
+    >
       <Image
-        className="w-8 mb-5"
-        src="/apps-add.png"
+        className="w-8 "
+        src="/menu-burger.png"
         alt="open nav"
         width={200}
         height={200}

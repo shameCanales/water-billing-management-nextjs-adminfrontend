@@ -23,6 +23,10 @@ export const uiSlice = createSlice({
     toggleExpandSidebar: (state) => {
       state.isSidebarExpanded = !state.isSidebarExpanded;
     },
+    expandSidebar: (state) => {
+      if (state.isSidebarExpanded === true) return;
+      state.isSidebarExpanded = true;
+    },
     // Mobile Sidebar
     openMobileSidebar: (state) => {
       state.mobileSidebarIsOpen = true;

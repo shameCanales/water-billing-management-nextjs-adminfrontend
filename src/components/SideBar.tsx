@@ -7,6 +7,8 @@ import { AppDispatch, RootState } from "@/lib/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "@/lib/store/uiSlice";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { useWindowWidth } from "@/hooks/useWindowWidth";
+import { useEffect } from "react";
 
 const links = [
   {
@@ -59,6 +61,7 @@ const links = [
 export default function SideBar() {
   const dispatch = useDispatch<AppDispatch>();
   const { mutate: logout, isPending: loggingOut } = useLogout();
+  const width = useWindowWidth();
 
   const mobileSidebarIsOpen = useSelector(
     (state: RootState) => state.ui.mobileSidebarIsOpen
@@ -67,6 +70,12 @@ export default function SideBar() {
   const sidebarIsExpanded = useSelector(
     (state: RootState) => state.ui.isSidebarExpanded
   );
+
+  useEffect(() => {
+    if (width <= 1280 && !sidebarIsExpanded) {
+      dispatch(uiActions.expandSidebar());
+    }
+  }, [width, sidebarIsExpanded, dispatch]);
 
   function handleCloseNav() {
     dispatch(uiActions.closeMobileSidebar());
@@ -86,11 +95,15 @@ export default function SideBar() {
       className={` ${
         sidebarIsExpanded ? "w-[250px]" : "w-auto"
       } p-4 h-full border-r-stone-300 bg-slate-50 z-50 ${
-        mobileSidebarIsOpen ? "block" : "hidden"
-      } xl:block`}
+        mobileSidebarIsOpen ? "block absolute" : "hidden"
+      } xl:block xl:static`}
     >
-      <button onClick={() => handleToggleExpandSidebar()}>
+      <button
+        className="hidden xl:flex bg-slate-200 p-2 rounded-md border-slate-400 border mb-8 w-full"
+        onClick={() => handleToggleExpandSidebar()}
+      >
         {sidebarIsExpanded ? <PanelLeftClose /> : <PanelLeftOpen />}
+        {sidebarIsExpanded && <span className="ml-2">Collapse</span>}
       </button>
 
       <div

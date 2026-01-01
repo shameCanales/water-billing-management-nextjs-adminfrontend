@@ -21,8 +21,10 @@ export default function UserProfile() {
     profileContent = (
       <>
         <div>
-          <div className={`bg-green-600 aspect-square rounded-full w-9 text-center flex items-center justify-center ml-2 text-stone-50 font-bold`}>
-            {toUpperCase(user?.firstName[0]}
+          <div
+            className={`bg-green-600 aspect-square rounded-full w-9 text-center flex items-center justify-center  text-stone-50 font-bold`}
+          >
+            {user?.firstName[0].toUpperCase() + user?.lastName[0].toUpperCase()}
           </div>
         </div>
 
