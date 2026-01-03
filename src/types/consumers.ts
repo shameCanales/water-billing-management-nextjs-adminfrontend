@@ -67,6 +67,24 @@ export interface CreateConsumerResponse {
     __v: number;
   };
 }
+export interface UpdateConsumerResponse {
+  success: boolean;
+  message: string;
+  data: {
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    email: string;
+    birthDate: string; // YYYY-MM-DD
+    mobileNumber: string;
+    address: string;
+    status: "active" | "suspended";
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+}
 
 // Edit Consumer Interface
 export interface EditConsumerData {

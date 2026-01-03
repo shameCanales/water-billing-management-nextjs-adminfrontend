@@ -35,7 +35,7 @@ export const ActionMenu = ({
   }, [isOpen, onClose]);
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative " ref={menuRef}>
       <button
         onClick={(e) => {
           e.stopPropagation(); // Stop row click
@@ -52,7 +52,7 @@ export const ActionMenu = ({
 
       {/* Dropdown Content */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-100 z-50 py-1 animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute overflow-auto top-0 right-0 w-48 bg-white rounded-md shadow-lg border border-gray-100 z-2 py-1 animate-in fade-in zoom-in-95 duration-100">
           {children}
         </div>
       )}

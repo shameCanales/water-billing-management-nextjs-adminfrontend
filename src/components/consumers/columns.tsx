@@ -3,16 +3,17 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Consumer } from "@/types/consumers";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { Info } from "lucide-react";
+import { Info, User } from "lucide-react";
 import { ActionMenuItem, ActionMenu } from "./ActionMenu";
-import { Eye, Edit, UserX, Trash2 } from "lucide-react";
+import { Eye, Edit, UserX, UserCheck, Trash2 } from "lucide-react";
 
 // CHANGED: Export a function instead of a constant array
 export const getColumns = (
   openMenuId: string | null,
   setOpenMenuId: (id: string | null) => void,
   onEdit: (consumer: Consumer) => void,
-  onDelete: (consumer: Consumer) => void
+  onDelete: (consumer: Consumer) => void,
+  onUpdateConsumerStatus: (id: string, status: "active" | "suspended") => void
 ): ColumnDef<Consumer>[] => [
   {
     accessorKey: "lastName", // should match from data fields received from api?
@@ -117,9 +118,24 @@ export const getColumns = (
 
           <ActionMenuItem
             className="text-gray-700"
-            onClick={() => console.log("Suspend", row.original._id)}
+            onClick={() => {
+              const status =
+                row.original.status === "active" ? "suspended" : "active";
+              onUpdateConsumerStatus(row.original._id, status);
+              setOpenMenuId(null);
+            }}
           >
-            <UserX size={14} /> Suspend Account
+            {row.original.status === "active" ? (
+              <>
+                <UserX size={14} />
+                <p>Suspend</p>
+              </>
+            ) : (
+              <>
+                <UserCheck size={14} />
+                <p>Activate</p>
+              </>
+            )}
           </ActionMenuItem>
 
           <ActionMenuItem

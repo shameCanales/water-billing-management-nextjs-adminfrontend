@@ -7,6 +7,7 @@ import {
   CreateConsumerResponse,
   EditConsumerData,
   EditConsumerResponse,
+  UpdateConsumerResponse,
 } from "@/types/consumers";
 
 export const getAllConsumers = async (
@@ -48,9 +49,10 @@ export const deleteConsumer = async (
   return response.data;
 };
 
-// delete
-// http://localhost:3001/api/consumers/69352e94a7405d4021e9b5ef
-// {
-//     "success": true,
-//     "message": "Consumer deleted successfully"
-// }
+export const updateConsumerStatus = async (
+  id: string,
+  status: "active" | "suspended"
+): Promise<UpdateConsumerResponse> => {
+  const response = await api.patch(`/consumers/${id}/status`, { status });
+  return response.data;
+};

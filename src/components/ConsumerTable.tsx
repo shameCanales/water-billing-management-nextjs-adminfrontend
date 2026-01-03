@@ -27,6 +27,7 @@ import { uiActions } from "@/lib/store/uiSlice";
 import { Consumer } from "@/types/consumers";
 import EditConsumerModal from "./consumers/EditConsumerModal";
 import DeleteConsumerModal from "./consumers/DeleteConsumerModal";
+import { useUpdateConsumerStatus } from "@/hooks/consumers/useUpdateConsumerStatus";
 
 type StatusFilterType = "active" | "suspended" | "all" | "";
 
@@ -136,6 +137,16 @@ export default function ConsumerTable() {
     [dispatch]
   );
 
+  const { mutate: updateConsumerStatus, isPending: updatingConsumerStatus } =
+    useUpdateConsumerStatus();
+
+  const handleUpdateConsumerStatus = useCallback(
+    (id: string, status: "active" | "suspended") => {
+      updateConsumerStatus({ id, status });
+    },
+    [updateConsumerStatus]
+  );
+
   // You are using useMemo here. This is a performance trick. It says: "Only re-create this column definition if openMenuRowId changes." If you didn't do this, the table logic would reset every time you typed a letter in the search bar.s
   const columns = useMemo(
     () =>
@@ -143,9 +154,15 @@ export default function ConsumerTable() {
         openMenuRowId,
         setOpenMenuRowId,
         handleEditClick,
-        handleDeleteClick
+        handleDeleteClick,
+        handleUpdateConsumerStatus
       ),
-    [openMenuRowId, handleDeleteClick, handleEditClick]
+    [
+      openMenuRowId,
+      handleDeleteClick,
+      handleEditClick,
+      handleUpdateConsumerStatus,
+    ]
   );
 
   const table = useReactTable({
