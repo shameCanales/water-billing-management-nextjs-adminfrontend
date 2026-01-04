@@ -21,8 +21,8 @@ import {
 } from "lucide-react";
 import { getColumns } from "./consumers/columns";
 import AddConsumerModal from "./consumers/AddConsumerModal";
-import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
 import { Consumer } from "@/types/consumers";
 import EditConsumerModal from "./consumers/EditConsumerModal";

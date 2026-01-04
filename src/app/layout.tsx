@@ -3,6 +3,7 @@ import "./globals.css";
 import ReduxToolkitProvider from "@/lib/providers/ReduxToolkitProvider";
 import TanstackProvider from "@/lib/providers/TanstackProvider";
 import { outfit } from "@/lib/fonts";
+import { ToastProvider } from "@/components/Providers/ToastProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <ReduxToolkitProvider>
         <TanstackProvider>
-          <body className={`${outfit.className} antialiased`}>{children}</body>
+          <body className={`${outfit.className} antialiased`}>
+            {children}
+            <ToastProvider />
+          </body>
         </TanstackProvider>
       </ReduxToolkitProvider>
     </html>
