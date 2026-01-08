@@ -1,3 +1,5 @@
+import { PaginationMeta } from "./pagination";
+
 export interface Consumer {
   _id: string;
   firstName: string;
@@ -13,20 +15,11 @@ export interface Consumer {
   __v: number;
 }
 
-// 1. THe Output: What the backend sends back inside data
-export interface PaginationMeta {
-  total: number;
-  totalPages: number;
-  currentPage: number;
-  limit: number;
-}
-
 export interface PaginatedConsumerResult {
   consumers: Consumer[];
   pagination: PaginationMeta;
 }
 
-// 2. The Input: What we send to the backend
 export interface ConsumerQueryParams {
   page?: number;
   limit?: number;
