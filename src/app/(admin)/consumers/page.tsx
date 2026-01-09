@@ -1,4 +1,4 @@
-import ConsumerTable from "@/components/ConsumerTable";
+import ConsumerTable from "@/components/consumers/ConsumerTable";
 
 export default function ConsumersPage() {
   return (

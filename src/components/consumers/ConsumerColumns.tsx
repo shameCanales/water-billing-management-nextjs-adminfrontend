@@ -4,11 +4,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Consumer } from "@/types/consumers";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Info, User } from "lucide-react";
-import { ActionMenuItem, ActionMenu } from "./ActionMenu";
+import { ActionMenuItem, ActionMenu } from "../ActionMenu";
 import { Eye, Edit, UserX, UserCheck, Trash2 } from "lucide-react";
 
 // CHANGED: Export a function instead of a constant array
-export const getColumns = (
+export const getConsumerColumns = (
   openMenuId: string | null,
   setOpenMenuId: (id: string | null) => void,
   onEdit: (consumer: Consumer) => void,

@@ -9,7 +9,7 @@ import {
   SortingState,
   PaginationState,
 } from "@tanstack/react-table";
-import { StatusBadge } from "./ui/StatusBadge";
+import { StatusBadge } from "../ui/StatusBadge";
 import {
   Search,
   Filter,
@@ -19,14 +19,14 @@ import {
   ChevronsRight,
   Plus,
 } from "lucide-react";
-import { getColumns } from "./consumers/columns";
-import AddConsumerModal from "./consumers/AddConsumerModal";
+import { getConsumerColumns } from "./ConsumerColumns";
+import AddConsumerModal from "./AddConsumerModal";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
 import { Consumer } from "@/types/consumers";
-import EditConsumerModal from "./consumers/EditConsumerModal";
-import DeleteConsumerModal from "./consumers/DeleteConsumerModal";
+import EditConsumerModal from "./EditConsumerModal";
+import DeleteConsumerModal from "./DeleteConsumerModal";
 import { useUpdateConsumerStatus } from "@/hooks/consumers/useUpdateConsumerStatus";
 
 type StatusFilterType = "active" | "suspended" | "all" | "";
@@ -150,7 +150,7 @@ export default function ConsumerTable() {
   // You are using useMemo here. This is a performance trick. It says: "Only re-create this column definition if openMenuRowId changes." If you didn't do this, the table logic would reset every time you typed a letter in the search bar.s
   const columns = useMemo(
     () =>
-      getColumns(
+      getConsumerColumns(
         openMenuRowId,
         setOpenMenuRowId,
         handleEditClick,

@@ -6,14 +6,24 @@ interface InitialUiState {
   addConsumerModalIsOpen: boolean;
   editConsumerModalIsOpen: boolean;
   deleteConsumerModalIsOpen: boolean;
+  editConnectionModalIsOpen: boolean;
+  openDeleteConnectionModal: boolean;
+  addConnectionModalisOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
   isSidebarExpanded: true,
   mobileSidebarIsOpen: false,
+
+  // consumer modals
   addConsumerModalIsOpen: false,
   editConsumerModalIsOpen: false,
   deleteConsumerModalIsOpen: false,
+
+  // connection modals
+  addConnectionModalisOpen: false,
+  editConnectionModalIsOpen: false,
+  openDeleteConnectionModal: false,
 };
 
 export const uiSlice = createSlice({
@@ -34,6 +44,7 @@ export const uiSlice = createSlice({
     closeMobileSidebar: (state) => {
       state.mobileSidebarIsOpen = false;
     },
+
     // consumer modals
     openAddConsumerModal: (state) => {
       state.addConsumerModalIsOpen = true;
@@ -52,6 +63,26 @@ export const uiSlice = createSlice({
     },
     closeDeleteConsumerModal: (state) => {
       state.deleteConsumerModalIsOpen = false;
+    },
+
+    // connection modals
+    openEditConnectionModal: (state) => {
+      state.editConnectionModalIsOpen = true;
+    },
+    closeEditConnectionModal: (state) => {
+      state.editConnectionModalIsOpen = false;
+    },
+    openDeleteConnectionModal: (state) => {
+      state.openDeleteConnectionModal = true;
+    },
+    closeDeleteConnectionModal: (state) => {
+      state.openDeleteConnectionModal = false;
+    },
+    openAddConnectionModal: (state) => {
+      state.addConnectionModalisOpen = true;
+    },
+    closeAddConnectionModal: (state) => {
+      state.addConnectionModalisOpen = false;
     },
   },
 });
