@@ -1,13 +1,13 @@
 import { api } from "./api";
-import { APIResponse } from "@/types/user";
+import { APIResponse } from "@/types/shared";
 import {
   ConsumerQueryParams,
   PaginatedConsumerResult,
   CreateConsumerData,
   CreateConsumerResponse,
   EditConsumerData,
-  EditConsumerResponse,
   UpdateConsumerResponse,
+  Consumer,
 } from "@/types/consumers";
 
 export const getAllConsumers = async (
@@ -34,7 +34,7 @@ export const addConsumer = async (
 export const editConsumer = async (
   id: string,
   data: EditConsumerData
-): Promise<EditConsumerResponse> => {
+): Promise<APIResponse<Consumer>> => {
   const response = await api.patch(`/consumers/${id}`, data);
   return response.data;
 };

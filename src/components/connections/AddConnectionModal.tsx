@@ -5,9 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Loader2 } from "lucide-react";
 
 // Store & Hooks
-import { RootState } from "@/lib/store/store"; // Adjust path if needed
+import { RootState } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
-// import { useAddConnection } from "@/hooks/connections/useAddConnection";
 import { useGetAllConsumers } from "@/hooks/consumers/useGetAllConsumers";
 
 // UI Components
@@ -15,14 +14,15 @@ import { Modal } from "@/components/ui/Modal";
 import FormInput from "@/components/ui/FormInput";
 import FormLabel from "@/components/ui/FormLabel";
 import FormSelect from "../ui/FormSelect";
+import { useAddConnection } from "@/hooks/connections/useAddConnection";
 
 interface AddConnectionForm {
   consumer: string;
   meterNumber: string;
   address: string;
   connectionDate: string;
-  type: "residential" | "commercial" | "industrial";
-  status: "active" | "disconnected" | "suspended" | "pending";
+  type: "residential" | "commercial";
+  status: "active" | "disconnected";
 }
 
 export default function AddConnectionModal() {
@@ -31,8 +31,6 @@ export default function AddConnectionModal() {
     (state: RootState) => state.ui.addConnectionModalIsOpen
   );
 
-  // 1. Fetch Consumers for the Dropdown (fetch all for selection)
-  // We pass a large limit to get all consumers for the dropdown
   const { data: consumerData, isLoading: isLoadingConsumers } =
     useGetAllConsumers({
       page: 1,
@@ -175,8 +173,6 @@ export default function AddConnectionModal() {
           >
             <option value="active">Active</option>
             <option value="disconnected">Disconnected</option>
-            <option value="suspended">Suspended</option>
-            <option value="pending">Pending</option>
           </FormSelect>
         </div>
 

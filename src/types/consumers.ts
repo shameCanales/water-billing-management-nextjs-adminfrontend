@@ -92,8 +92,8 @@ export interface EditConsumerData {
   status?: "active" | "suspended";
 }
 
-export interface EditConsumerResponse {
-  success: boolean;
-  message: string;
-  data: Consumer;
-}
+// export interface EditConsumerResponse {
+//   success: boolean;
+//   message: string;
+//   data: Consumer;
+// }

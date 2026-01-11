@@ -35,3 +35,12 @@ export interface ConnectionQueryParams {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
+
+export interface CreateConnectionData {
+  consumer: string;
+  meterNumber: number;
+  address: string;
+  connectionDate: string;
+  type: "residential" | "commercial";
+  status: "active" | "disconnected";
+}
