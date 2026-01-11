@@ -1,11 +1,16 @@
+import { ComponentProps } from "react";
 
-import type { ReactNode } from "react";
+// Best Practice: Inherit all standard label props (htmlFor, id, className, children, etc.)
+type FormLabelProps = ComponentProps<"label">;
 
-type FormLabelProps = {
-  children: ReactNode;
-  htmlFor: string;
-};
-
-export default function FormLabel({children, htmlFor}: FormLabelProps){
-  return <label className="text-sm text-slate-900" htmlFor={htmlFor}>{children}</label>
+export default function FormLabel({ children, className = "", ...props }: FormLabelProps) {
+  return (
+    <label
+      // Merge default styles with any custom className passed in
+      className={`block text-sm font-medium text-slate-900 ${className}`}
+      {...props} // Spreads htmlFor and any other standard props automatically
+    >
+      {children}
+    </label>
+  );
 }

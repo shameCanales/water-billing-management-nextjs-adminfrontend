@@ -2,37 +2,56 @@
 import Image from "next/image";
 import FormLabel from "@/components/ui/FormLabel";
 import FormInput from "@/components/ui/FormInput";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useLogin } from "@/hooks/auth/useLogin";
 import { setCookie } from "cookies-next";
 import { authActions } from "@/lib/store/authSlice";
+import { z } from "zod/v3";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("admin6@test.com");
-  const [password, setPassword] = useState("@Password123");
-
   const { mutate: login, isPending, isError } = useLogin();
 
-  const handleSubmitLogin = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "admin6@test.com", // Kept your default for easy testing
+      password: "@Password123",
+    },
+  });
 
+  const onSubmit = (data: LoginFormData) => {
     login(
-      { email, password },
+      { email: data.email, password: data.password },
       {
-        onSuccess: (data) => {
-          setCookie("admin_token", data.accessToken, { maxAge: 15 * 60 });
+        onSuccess: (responseData) => {
+          setCookie("admin_token", responseData.accessToken, {
+            maxAge: 15 * 60,
+          });
 
           dispatch(
             authActions.setCredentials({
-              user: data.user,
-              token: data.accessToken,
+              user: responseData.user,
+              token: responseData.accessToken,
             })
           );
 
@@ -64,43 +83,61 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmitLogin} className="mt-10">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-10">
+          {/* Email Field */}
           <div className="grid">
             <FormLabel htmlFor="email">Email</FormLabel>
             <FormInput
+              id="email"
               type="email"
-              value={email}
-              htmlId="email"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEmail(e.currentTarget.value)
-              }
               placeholder="Enter your email address"
+              // Connect React Hook Form
+              {...register("email")}
             />
+            {/* Validation Error Message */}
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
+          {/* Password Field */}
           <div className="grid mt-5">
             <FormLabel htmlFor="password">Password</FormLabel>
             <FormInput
+              id="password"
               type="password"
-              value={password}
-              htmlId="password"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.currentTarget.value)
-              }
               placeholder="Enter your password"
+              // Connect React Hook Form
+              {...register("password")}
             />
+            {/* Validation Error Message */}
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
+
+          {isError && (
+            <div className="mt-5 p-3 bg-red-50 border border-red-100 rounded-md">
+              <p className="text-xs text-red-800 text-center font-medium">
+                Invalid credentials. Please try again.
+              </p>
+            </div>
+          )}
 
           <button
             type="submit"
             disabled={isPending}
-            className={`mt-15  text-stone-50 w-full py-3.5 px-4 text-sm font-semibold rounded-md ${
+            className={`mt-8 text-stone-50 w-full py-3.5 px-4 text-sm font-semibold rounded-md transition-colors ${
               isPending
                 ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-600"
+                : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            {`${isPending ? "Signing in..." : "Sign In"}`}
+            {isPending ? "Signing in..." : "Sign In"}
           </button>
         </form>
 

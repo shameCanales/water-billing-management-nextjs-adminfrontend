@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { useReactTable } from "@tanstack/react-table";
 import { getConnectionColumns } from "./ConnectionColumns";
+import AddConnectionModal from "./AddConnectionModal";
 
 type StatusFilterType = "active" | "disconnected" | "all" | "";
 type TypeFilterType = "residential" | "commercial" | "all" | "";
@@ -124,8 +125,8 @@ export default function ConnectionsTable() {
   return (
     <div className="space-y-6 font-sans mt-8">
       {/* --- MODALS --- */}
-      {/* <AddConnectionModal />
-      <EditConnectionModal connectionToEdit={selectedConnection} />
+      <AddConnectionModal />
+      {/* <EditConnectionModal connectionToEdit={selectedConnection} />
       <DeleteConnectionModal connectionToDelete={selectedConnection} /> */}
 
       {/* --- TOOLBAR --- */}
@@ -154,7 +155,6 @@ export default function ConnectionsTable() {
               <option value="">All Types</option>
               <option value="residential">Residential</option>
               <option value="commercial">Commercial</option>
-              <option value="industrial">Industrial</option>
             </select>
           </div>
 

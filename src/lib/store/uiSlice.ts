@@ -8,7 +8,7 @@ interface InitialUiState {
   deleteConsumerModalIsOpen: boolean;
   editConnectionModalIsOpen: boolean;
   openDeleteConnectionModal: boolean;
-  addConnectionModalisOpen: boolean;
+  addConnectionModalIsOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
@@ -21,7 +21,7 @@ const initialUiState: InitialUiState = {
   deleteConsumerModalIsOpen: false,
 
   // connection modals
-  addConnectionModalisOpen: false,
+  addConnectionModalIsOpen: false,
   editConnectionModalIsOpen: false,
   openDeleteConnectionModal: false,
 };
@@ -79,10 +79,10 @@ export const uiSlice = createSlice({
       state.openDeleteConnectionModal = false;
     },
     openAddConnectionModal: (state) => {
-      state.addConnectionModalisOpen = true;
+      state.addConnectionModalIsOpen = true;
     },
     closeAddConnectionModal: (state) => {
-      state.addConnectionModalisOpen = false;
+      state.addConnectionModalIsOpen = false;
     },
   },
 });
