@@ -15,15 +15,31 @@ import FormInput from "@/components/ui/FormInput";
 import FormLabel from "@/components/ui/FormLabel";
 import FormSelect from "../ui/FormSelect";
 import { useAddConnection } from "@/hooks/connections/useAddConnection";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-interface AddConnectionForm {
-  consumer: string;
-  meterNumber: string;
-  address: string;
-  connectionDate: string;
-  type: "residential" | "commercial";
-  status: "active" | "disconnected";
-}
+const connectionSchema = z.object({
+  consumer: z.string().min(1, "Consumer is required"),
+
+  meterNumber: z.coerce
+    .number()
+    .int("Meter number must be an integer")
+    .positive("Meter number must be positive"),
+
+  address: z.string().min(1, "Address is required"),
+
+  connectionDate: z
+    .string()
+    .refine((date) => new Date(date).toString() !== "Invalid Date", {
+      message: "A valid connection date is required",
+    }),
+
+  type: z.enum(["residential", "commercial"]),
+
+  status: z.enum(["active", "disconnected"]),
+});
+
+type ConnectionFormValues = z.infer<typeof connectionSchema>;
 
 export default function AddConnectionModal() {
   const dispatch = useDispatch();
@@ -36,29 +52,39 @@ export default function AddConnectionModal() {
       page: 1,
       limit: 100,
       status: "active",
+      sortOrder: "asc",
+      sortBy: "firstName",
     });
 
   const consumers = consumerData?.consumers || [];
 
   const { mutate: addConnection, isPending } = useAddConnection();
 
+  const today = new Date().toLocaleDateString("en-CA");
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<AddConnectionForm>();
+  } = useForm({
+    resolver: zodResolver(connectionSchema),
+    defaultValues: {
+      connectionDate: today,
+      type: "residential",
+      status: "active",
+    },
+  });
 
   const onClose = () => {
     dispatch(uiActions.closeAddConnectionModal());
     reset();
   };
 
-  const onSubmit = (data: AddConnectionForm) => {
+  const onSubmit = (data: ConnectionFormValues) => {
     addConnection(
       {
         ...data,
-        meterNumber: Number(data.meterNumber), // Backend expects number
       },
       {
         onSuccess: () => onClose(),
@@ -82,7 +108,7 @@ export default function AddConnectionModal() {
               <FormSelect
                 id="consumer"
                 disabled={isLoadingConsumers}
-                {...register("consumer", { required: "Consumer is required" })}
+                {...register("consumer")}
               >
                 <option value="">Select consumer</option>
                 {consumers.map((c) => (
@@ -110,9 +136,7 @@ export default function AddConnectionModal() {
               id="meterNumber"
               type="number"
               placeholder="e.g. 100234"
-              {...register("meterNumber", {
-                required: "Meter number is required",
-              })}
+              {...register("meterNumber")}
             />
             {errors.meterNumber && (
               <span className="text-xs text-red-500">
@@ -128,7 +152,7 @@ export default function AddConnectionModal() {
           <FormInput
             id="address"
             placeholder="Complete address (Barangay, City, Province)"
-            {...register("address", { required: "Address is required" })}
+            {...register("address")}
           />
           {errors.address && (
             <span className="text-xs text-red-500">
@@ -144,7 +168,7 @@ export default function AddConnectionModal() {
             <FormInput
               id="connectionDate"
               type="date"
-              {...register("connectionDate", { required: "Date is required" })}
+              {...register("connectionDate")}
             />
             {errors.connectionDate && (
               <span className="text-xs text-red-500">
@@ -156,7 +180,7 @@ export default function AddConnectionModal() {
           <div className="space-y-1">
             <FormLabel htmlFor="type">Type *</FormLabel>
 
-            <FormSelect id="type" {...register("type", { required: true })}>
+            <FormSelect id="type" {...register("type")}>
               <option value="residential">Residential</option>
               <option value="commercial">Commercial</option>
             </FormSelect>
@@ -166,11 +190,7 @@ export default function AddConnectionModal() {
         {/* Row 4: Status */}
         <div className="space-y-1">
           <FormLabel htmlFor="status">Status *</FormLabel>
-          <FormSelect
-            id="status"
-            {...register("status", { required: true })}
-            defaultValue="active"
-          >
+          <FormSelect id="status" {...register("status")} defaultValue="active">
             <option value="active">Active</option>
             <option value="disconnected">Disconnected</option>
           </FormSelect>

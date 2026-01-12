@@ -6,6 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Modal } from "../ui/Modal";
+import FormInput from "../ui/FormInput";
+import FormLabel from "../ui/FormLabel";
+import FormSelect from "../ui/FormSelect";
 
 const consumerSchema = z.object({
   firstName: z
@@ -23,20 +26,23 @@ const consumerSchema = z.object({
   email: z
     .string()
     .min(1, "Email is required")
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: "Please enter a valid email address" }),
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+      message: "Please enter a valid email address",
+    }),
 
   birthDate: z
     .string()
     .min(1, "Birth date is required")
-    .refine((date) => !isNaN(Date.parse(date)), { message: "Invalid date format" }),
+    .refine((date) => !isNaN(Date.parse(date)), {
+      message: "Invalid date format",
+    }),
 
   mobileNumber: z
     .string()
     .min(1, "Mobile number is required")
-    .regex(
-      /^09\d{9}$/,
-      { message: "Please enter a valid PH mobile number (e.g., 09171234567)" }
-    ),
+    .regex(/^09\d{9}$/, {
+      message: "Please enter a valid PH mobile number (e.g., 09171234567)",
+    }),
   password: z.string().min(6, "Password must be at least 6 characters long"),
   address: z
     .string()
