@@ -114,7 +114,7 @@ export default function AddConsumerModal() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* First Name */}
-          <div className="">
+          <div>
             <FormLabel htmlFor="firstName">
               First Name <RequiredFormFieldIndicator />
             </FormLabel>
@@ -130,7 +130,7 @@ export default function AddConsumerModal() {
           </div>
 
           {/* Middle Name */}
-          <div className="">
+          <div>
             <FormLabel htmlFor="middleName">Middle Name</FormLabel>
             <FormInput
               id="middleName"
@@ -143,7 +143,7 @@ export default function AddConsumerModal() {
           </div>
 
           {/* Last Name */}
-          <div className="space-y-2">
+          <div>
             <FormLabel htmlFor="lastname">
               Last Name <RequiredFormFieldIndicator />
             </FormLabel>
@@ -160,7 +160,7 @@ export default function AddConsumerModal() {
           </div>
 
           {/* Email */}
-          <div className="space-y-2">
+          <div>
             <FormLabel htmlFor="email">
               Email <RequiredFormFieldIndicator />
             </FormLabel>
@@ -177,7 +177,7 @@ export default function AddConsumerModal() {
           </div>
 
           {/* Birth Date */}
-          <div className="space-y-2">
+          <div>
             <FormLabel htmlFor="birthDate">
               Birth Date <RequiredFormFieldIndicator />
             </FormLabel>
@@ -190,7 +190,7 @@ export default function AddConsumerModal() {
           </div>
 
           {/* Mobile Number */}
-          <div className="space-y-2">
+          <div>
             <FormLabel htmlFor="mobileNumber">
               Mobile Number <RequiredFormFieldIndicator />
             </FormLabel>
@@ -208,7 +208,7 @@ export default function AddConsumerModal() {
           </div>
 
           {/* Address - Full Width */}
-          <div className="col-span-1 md:col-span-2 space-y-2">
+          <div className="col-span-1 md:col-span-2 ">
             <FormLabel htmlFor="address">
               Address <RequiredFormFieldIndicator />
             </FormLabel>
@@ -221,7 +221,7 @@ export default function AddConsumerModal() {
           </div>
 
           {/* Status */}
-          <div className="space-y-2">
+          <div>
             <FormLabel htmlFor="status">Status</FormLabel>
 
             <FormSelect id="status" {...register("status")}>
@@ -231,7 +231,7 @@ export default function AddConsumerModal() {
           </div>
 
           {/* Password */}
-          <div className="space-y-2">
+          <div>
             <FormLabel htmlFor="password">
               Password <RequiredFormFieldIndicator />
             </FormLabel>
@@ -254,6 +254,12 @@ export default function AddConsumerModal() {
             Create Consumer
           </Button>
         </div>
+
+        {errorCreatingConsumer && (
+          <p className="text-sm text-red-600 font-medium animate-pulse">
+            {createConsumerError?.message || "Failed to create consumer"}
+          </p>
+        )}
       </form>
     </Modal>
   );
