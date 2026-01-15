@@ -9,6 +9,9 @@ import { Modal } from "../ui/Modal";
 import FormInput from "../ui/FormInput";
 import FormLabel from "../ui/FormLabel";
 import FormSelect from "../ui/FormSelect";
+import RequiredFormFieldIndicator from "../ui/RequiredFormFieldIndicator";
+import FormValidationErrorMsg from "../ui/FormValidationErrorMsg";
+import Button from "../ui/Button";
 
 const consumerSchema = z.object({
   firstName: z
@@ -29,14 +32,12 @@ const consumerSchema = z.object({
     .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
       message: "Please enter a valid email address",
     }),
-
   birthDate: z
     .string()
     .min(1, "Birth date is required")
     .refine((date) => !isNaN(Date.parse(date)), {
       message: "Invalid date format",
     }),
-
   mobileNumber: z
     .string()
     .min(1, "Mobile number is required")
@@ -77,6 +78,7 @@ export default function AddConsumerModal() {
     defaultValues: {
       status: "active",
       middleName: "",
+      // birthDate: ,
     },
   });
 
@@ -87,7 +89,6 @@ export default function AddConsumerModal() {
 
   const onSubmit = (data: ConsumerFormValues) => {
     // Clean up optional fields before sending
-
     const payload = {
       ...data,
       middleName: data.middleName || undefined,
@@ -96,11 +97,9 @@ export default function AddConsumerModal() {
     createConsumer(payload, {
       onSuccess: () => {
         handleClose();
-        //show success  toast here
       },
       onError: (error) => {
         console.error("error: ", error);
-        // show error toast
       },
     });
   };
@@ -115,153 +114,145 @@ export default function AddConsumerModal() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* First Name */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              First Name *
-            </label>
-            <input
+          <div className="">
+            <FormLabel htmlFor="firstName">
+              First Name <RequiredFormFieldIndicator />
+            </FormLabel>
+            <FormInput
+              id="firstName"
+              placeholder="e.g. Juan "
               {...register("firstName")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+
             {errors.firstName && (
-              <p className="text-xs text-red-500">{errors.firstName.message}</p>
+              <FormValidationErrorMsg error={errors.firstName.message} />
             )}
           </div>
 
           {/* Middle Name */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Middle Name
-            </label>
-            <input
+          <div className="">
+            <FormLabel htmlFor="middleName">Middle Name</FormLabel>
+            <FormInput
+              id="middleName"
+              placeholder="e.g. Dela"
               {...register("middleName")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {errors.middleName && (
-              <p className="text-xs text-red-500">
-                {errors.middleName.message}
-              </p>
+              <FormValidationErrorMsg error={errors.middleName.message} />
             )}
           </div>
 
           {/* Last Name */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Last Name *
-            </label>
-            <input
+            <FormLabel htmlFor="lastname">
+              Last Name <RequiredFormFieldIndicator />
+            </FormLabel>
+
+            <FormInput
+              id="lastname"
+              placeholder="e.g. Cruz"
               {...register("lastName")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+
             {errors.lastName && (
-              <p className="text-xs text-red-500">{errors.lastName.message}</p>
+              <FormValidationErrorMsg error={errors.lastName.message} />
             )}
           </div>
 
           {/* Email */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Email *</label>
-            <input
-              type="email"
+            <FormLabel htmlFor="email">
+              Email <RequiredFormFieldIndicator />
+            </FormLabel>
+
+            <FormInput
+              id="email"
+              placeholder="e.g. example@gmail.com"
               {...register("email")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+
             {errors.email && (
-              <p className="text-xs text-red-500">{errors.email.message}</p>
+              <FormValidationErrorMsg error={errors.email.message} />
             )}
           </div>
 
           {/* Birth Date */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Birth Date *
-            </label>
-            <input
-              type="date"
-              {...register("birthDate")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-600"
-            />
+            <FormLabel htmlFor="birthDate">
+              Birth Date <RequiredFormFieldIndicator />
+            </FormLabel>
+
+            <FormInput id="birthDate" type="date" {...register("birthDate")} />
+
             {errors.birthDate && (
-              <p className="text-xs text-red-500">{errors.birthDate.message}</p>
+              <FormValidationErrorMsg error={errors.birthDate.message} />
             )}
           </div>
 
           {/* Mobile Number */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Mobile Number *
-            </label>
-            <input
-              placeholder="09171234567"
+            <FormLabel htmlFor="mobileNumber">
+              Mobile Number <RequiredFormFieldIndicator />
+            </FormLabel>
+
+            <FormInput
+              id="mobileNumber"
               maxLength={11}
+              placeholder="09123456789"
               {...register("mobileNumber")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+
             {errors.mobileNumber && (
-              <p className="text-xs text-red-500">
-                {errors.mobileNumber.message}
-              </p>
+              <FormValidationErrorMsg error={errors.mobileNumber.message} />
             )}
           </div>
 
           {/* Address - Full Width */}
           <div className="col-span-1 md:col-span-2 space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Address *
-            </label>
-            <input
-              {...register("address")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <FormLabel htmlFor="address">
+              Address <RequiredFormFieldIndicator />
+            </FormLabel>
+
+            <FormInput id="address" {...register("address")} />
+
             {errors.address && (
-              <p className="text-xs text-red-500">{errors.address.message}</p>
+              <FormValidationErrorMsg error={errors.address.message} />
             )}
           </div>
 
           {/* Status */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Status</label>
-            <select
-              {...register("status")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-            >
+            <FormLabel htmlFor="status">Status</FormLabel>
+
+            <FormSelect id="status" {...register("status")}>
               <option value="active">Active</option>
               <option value="suspended">Suspended</option>
-            </select>
+            </FormSelect>
           </div>
 
           {/* Password */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Password *
-            </label>
-            <input
-              type="password"
-              {...register("password")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <FormLabel htmlFor="password">
+              Password <RequiredFormFieldIndicator />
+            </FormLabel>
+
+            <FormInput id="password" {...register("password")} />
+
             {errors.password && (
-              <p className="text-xs text-red-500">{errors.password.message}</p>
+              <FormValidationErrorMsg error={errors.password.message} />
             )}
           </div>
         </div>
 
         {/* Footer Actions */}
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
+          <Button type="button" variant="outline" onClick={handleClose}>
             Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isCreatingConsumer}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {isCreatingConsumer ? "Creating..." : "Create Consumer"}
-          </button>
+          </Button>
+
+          <Button type="submit" isLoading={isCreatingConsumer}>
+            Create Consumer
+          </Button>
         </div>
       </form>
     </Modal>
