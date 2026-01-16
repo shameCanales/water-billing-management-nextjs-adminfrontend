@@ -5,5 +5,5 @@ export default function FormValidationErrorMsg({
 }) {
   if (!error) return null;
 
-  return <p className="text-xs text-red-500">{error}</p>;
+  return <p className="text-xs text-red-500 mt-1">{error}</p>;
 }

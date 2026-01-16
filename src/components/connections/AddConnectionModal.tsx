@@ -14,6 +14,9 @@ import { Modal } from "@/components/ui/Modal";
 import FormInput from "@/components/ui/FormInput";
 import FormLabel from "@/components/ui/FormLabel";
 import FormSelect from "../ui/FormSelect";
+import RequiredFormFieldIndicator from "../ui/RequiredFormFieldIndicator";
+import FormValidationErrorMsg from "../ui/FormValidationErrorMsg";
+import Button from "../ui/Button";
 import { useAddConnection } from "@/hooks/connections/useAddConnection";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -58,7 +61,12 @@ export default function AddConnectionModal() {
 
   const consumers = consumerData?.consumers || [];
 
-  const { mutate: addConnection, isPending } = useAddConnection();
+  const {
+    mutate: addConnection,
+    isPending: isCreatingConnection,
+    isError: errorCreatingConnection,
+    error: createConnectionError,
+  } = useAddConnection();
 
   const today = new Date().toLocaleDateString("en-CA");
 
@@ -76,10 +84,10 @@ export default function AddConnectionModal() {
     },
   });
 
-  const onClose = () => {
+  function handleClose() {
     dispatch(uiActions.closeAddConnectionModal());
     reset();
-  };
+  }
 
   const onSubmit = (data: ConnectionFormValues) => {
     addConnection(
@@ -87,7 +95,7 @@ export default function AddConnectionModal() {
         ...data,
       },
       {
-        onSuccess: () => onClose(),
+        onSuccess: () => handleClose(),
       }
     );
   };
@@ -95,15 +103,16 @@ export default function AddConnectionModal() {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => handleClose()}
       title="Add New Connection"
       description="Fill in the details to create a new water connection"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Row 1: Consumer & Meter Number */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <FormLabel htmlFor="consumer">Consumer *</FormLabel>
+          <div>
+            <FormLabel htmlFor="consumer">
+              Consumer <RequiredFormFieldIndicator />
+            </FormLabel>
             <div className="relative">
               <FormSelect
                 id="consumer"
@@ -117,21 +126,23 @@ export default function AddConnectionModal() {
                   </option>
                 ))}
               </FormSelect>
+
               {isLoadingConsumers && (
                 <div className="absolute right-8 top-2.5">
                   <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
                 </div>
               )}
             </div>
+
             {errors.consumer && (
-              <span className="text-xs text-red-500">
-                {errors.consumer.message}
-              </span>
+              <FormValidationErrorMsg error={errors.consumer.message} />
             )}
           </div>
 
-          <div className="space-y-1">
-            <FormLabel htmlFor="meterNumber">Meter Number *</FormLabel>
+          <div>
+            <FormLabel htmlFor="meterNumber">
+              Meter Number <RequiredFormFieldIndicator />
+            </FormLabel>
             <FormInput
               id="meterNumber"
               type="number"
@@ -139,46 +150,42 @@ export default function AddConnectionModal() {
               {...register("meterNumber")}
             />
             {errors.meterNumber && (
-              <span className="text-xs text-red-500">
-                {errors.meterNumber.message}
-              </span>
+              <FormValidationErrorMsg error={errors.meterNumber.message} />
             )}
           </div>
         </div>
 
         {/* Row 2: Address */}
-        <div className="space-y-1">
-          <FormLabel htmlFor="address">Address *</FormLabel>
+        <div>
+          <FormLabel htmlFor="address">
+            Address <RequiredFormFieldIndicator />
+          </FormLabel>
           <FormInput
             id="address"
             placeholder="Complete address (Barangay, City, Province)"
             {...register("address")}
           />
           {errors.address && (
-            <span className="text-xs text-red-500">
-              {errors.address.message}
-            </span>
+            <FormValidationErrorMsg error={errors.address.message} />
           )}
         </div>
 
         {/* Row 3: Date & Type */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <FormLabel htmlFor="connectionDate">Connection Date *</FormLabel>
+          <div>
+            <FormLabel htmlFor="connectionDate">Connection Date</FormLabel>
             <FormInput
               id="connectionDate"
               type="date"
               {...register("connectionDate")}
             />
             {errors.connectionDate && (
-              <span className="text-xs text-red-500">
-                {errors.connectionDate.message}
-              </span>
+              <FormValidationErrorMsg error={errors.connectionDate.message} />
             )}
           </div>
 
           <div className="space-y-1">
-            <FormLabel htmlFor="type">Type *</FormLabel>
+            <FormLabel htmlFor="type">Type</FormLabel>
 
             <FormSelect id="type" {...register("type")}>
               <option value="residential">Residential</option>
@@ -188,8 +195,8 @@ export default function AddConnectionModal() {
         </div>
 
         {/* Row 4: Status */}
-        <div className="space-y-1">
-          <FormLabel htmlFor="status">Status *</FormLabel>
+        <div>
+          <FormLabel htmlFor="status">Status</FormLabel>
           <FormSelect id="status" {...register("status")} defaultValue="active">
             <option value="active">Active</option>
             <option value="disconnected">Disconnected</option>
@@ -198,21 +205,12 @@ export default function AddConnectionModal() {
 
         {/* Footer Actions */}
         <div className="flex justify-end gap-3 pt-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200"
-          >
+          <Button type="button" variant="outline" onClick={() => handleClose()}>
             Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isPending}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+          </Button>
+          <Button type="submit" isLoading={isPending}>
             Create Connection
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

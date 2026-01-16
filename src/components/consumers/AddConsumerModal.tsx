@@ -68,6 +68,8 @@ export default function AddConsumerModal() {
     error: createConsumerError,
   } = useAddConsumer();
 
+  const today = new Date().toLocaleDateString("en-CA");
+
   const {
     register,
     handleSubmit,
@@ -78,7 +80,7 @@ export default function AddConsumerModal() {
     defaultValues: {
       status: "active",
       middleName: "",
-      // birthDate: ,
+      birthDate: today,
     },
   });
 
