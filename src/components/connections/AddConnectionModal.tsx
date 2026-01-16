@@ -208,7 +208,7 @@ export default function AddConnectionModal() {
           <Button type="button" variant="outline" onClick={() => handleClose()}>
             Cancel
           </Button>
-          <Button type="submit" isLoading={isPending}>
+          <Button type="submit" isLoading={isCreatingConnection}>
             Create Connection
           </Button>
         </div>
