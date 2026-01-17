@@ -10,10 +10,10 @@ import { uiActions } from "@/lib/store/uiSlice";
 import { useEditConsumer } from "@/hooks/consumers/useEditConsumer";
 import { Modal } from "../ui/Modal";
 import { Consumer } from "@/types/consumers";
-import FormLabel from "../ui/FormLabel";
-import FormInput from "../ui/FormInput";
-import FormSelect from "../ui/FormSelect";
-import FormValidationErrorMsg from "../ui/FormValidationErrorMsg";
+import FormLabel from "../ui/form/FormLabel";
+import FormInput from "../ui/form/FormInput";
+import FormSelect from "../ui/form/FormSelect";
+import FormValidationErrorMsg from "../ui/form/FormValidationErrorMsg";
 import Button from "../ui/Button";
 
 // --- 1. Zod Schema (Matches Backend Exactly) ---

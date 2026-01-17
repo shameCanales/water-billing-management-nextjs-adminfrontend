@@ -30,6 +30,8 @@ import {
 import { useReactTable } from "@tanstack/react-table";
 import { getConnectionColumns } from "./ConnectionColumns";
 import AddConnectionModal from "./AddConnectionModal";
+import TableToolbar from "../ui/table/TableToolbar";
+import TablePagination from "../ui/table/TablePagination";
 
 type StatusFilterType = "active" | "disconnected" | "all" | "";
 type TypeFilterType = "residential" | "commercial" | "all" | "";
@@ -67,6 +69,7 @@ export default function ConnectionsTable() {
     sortOrder: sorting[0]?.desc ? "desc" : "asc",
   });
 
+  //pagination
   const connections = data?.connections || [];
   const totalPages = data?.pagination.totalPages || 0;
   const totalRecords = data?.pagination.total || 0;
@@ -129,60 +132,42 @@ export default function ConnectionsTable() {
       {/* <EditConnectionModal connectionToEdit={selectedConnection} />
       <DeleteConnectionModal connectionToDelete={selectedConnection} /> */}
 
-      {/* --- TOOLBAR --- */}
-      <div className="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center">
-        <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
-          {/* Search */}
-          <div className="relative w-full sm:w-[320px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search consumer, meter # or address..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder:text-gray-400"
-            />
-          </div>
-
-          {/* Type Filter */}
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value as TypeFilterType)}
-              className="appearance-none w-full sm:w-40 pl-10 pr-8 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-gray-600"
-            >
-              <option value="">All Types</option>
-              <option value="residential">Residential</option>
-              <option value="commercial">Commercial</option>
-            </select>
-          </div>
-
-          {/* Status Filter */}
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <select
-              value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(e.target.value as StatusFilterType)
-              }
-              className="appearance-none w-full sm:w-40 pl-10 pr-8 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-gray-600"
-            >
-              <option value="">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="disconnected">Disconnected</option>
-            </select>
-          </div>
+      <TableToolbar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Search consumer, meter # or addresss."
+        onAddClick={() => dispatch(uiActions.openAddConnectionModal())}
+        addButtonLabel="Add Connection"
+      >
+        <div className="relative">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value as TypeFilterType)}
+            className="appearance-none w-full sm:w-40 pl-10 pr-8 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-gray-600"
+          >
+            <option value="">All Types</option>
+            <option value="residential">Residential</option>
+            <option value="commercial">Commercial</option>
+          </select>
         </div>
 
-        {/* Add Button */}
-        <button
-          onClick={() => dispatch(uiActions.openAddConnectionModal())}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm w-full sm:w-auto justify-center"
-        >
-          <Plus size={18} /> Add Connection
-        </button>
-      </div>
+        {/* Status Filter */}
+        <div className="relative">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as StatusFilterType)
+            }
+            className="appearance-none w-full sm:w-40 pl-10 pr-8 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-gray-600"
+          >
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="disconnected">Disconnected</option>
+          </select>
+        </div>
+      </TableToolbar>
 
       {/* --- TABLE CONTAINER --- */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden min-h-[400px]">
@@ -365,67 +350,12 @@ export default function ConnectionsTable() {
           </>
         )}
 
-        {/* PAGINATION FOOTER */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white">
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
-              Showing <span className="font-medium">{connections.length}</span>{" "}
-              of <span className="font-medium">{totalRecords}</span> results
-            </span>
-
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-                table.setPageIndex(0);
-              }}
-              className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-            >
-              {[10, 15, 20, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize} per page
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
-            >
-              <ChevronsLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-
-            <span className="text-sm font-medium px-2 text-gray-700">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {totalPages || 1}
-            </span>
-
-            <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
-            >
-              <ChevronsRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+        <TablePagination
+          table={table}
+          totalRecords={totalRecords}
+          totalPages={totalPages}
+          rowCount={connections.length}
+        />
       </div>
     </div>
   );

@@ -6,11 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Modal } from "../ui/Modal";
-import FormInput from "../ui/FormInput";
-import FormLabel from "../ui/FormLabel";
-import FormSelect from "../ui/FormSelect";
-import RequiredFormFieldIndicator from "../ui/RequiredFormFieldIndicator";
-import FormValidationErrorMsg from "../ui/FormValidationErrorMsg";
+import FormInput from "../ui/form/FormInput";
+import FormLabel from "../ui/form/FormLabel";
+import FormSelect from "../ui/form/FormSelect";
+import RequiredFormFieldIndicator from "../ui/form/RequiredFormFieldIndicator";
+import FormValidationErrorMsg from "../ui/form/FormValidationErrorMsg";
 import Button from "../ui/Button";
 
 const consumerSchema = z.object({

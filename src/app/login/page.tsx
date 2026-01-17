@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import FormLabel from "@/components/ui/FormLabel";
-import FormInput from "@/components/ui/FormInput";
+import FormLabel from "@/components/ui/form/FormLabel";
+import FormInput from "@/components/ui/form/FormInput";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useLogin } from "@/hooks/auth/useLogin";

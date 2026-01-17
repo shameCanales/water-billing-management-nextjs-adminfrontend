@@ -11,11 +11,11 @@ import { useGetAllConsumers } from "@/hooks/consumers/useGetAllConsumers";
 
 // UI Components
 import { Modal } from "@/components/ui/Modal";
-import FormInput from "@/components/ui/FormInput";
-import FormLabel from "@/components/ui/FormLabel";
-import FormSelect from "../ui/FormSelect";
-import RequiredFormFieldIndicator from "../ui/RequiredFormFieldIndicator";
-import FormValidationErrorMsg from "../ui/FormValidationErrorMsg";
+import FormInput from "@/components/ui/form/FormInput";
+import FormLabel from "@/components/ui/form/FormLabel";
+import FormSelect from "../ui/form/FormSelect";
+import RequiredFormFieldIndicator from "../ui/form/RequiredFormFieldIndicator";
+import FormValidationErrorMsg from "../ui/form/FormValidationErrorMsg";
 import Button from "../ui/Button";
 import { useAddConnection } from "@/hooks/connections/useAddConnection";
 import { zodResolver } from "@hookform/resolvers/zod";
