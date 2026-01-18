@@ -30,6 +30,9 @@ import { getConnectionColumns } from "./ConnectionColumns";
 import AddConnectionModal from "./AddConnectionModal";
 import TableToolbar from "../ui/table/TableToolbar";
 import PaginationButton from "../ui/pagination/PaginationButton";
+import PaginationInfo from "../ui/pagination/PaginationInfo";
+import PaginationPageCounter from "../ui/pagination/PaginationCounter";
+import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect";
 
 type StatusFilterType = "active" | "disconnected" | "all" | "";
 type TypeFilterType = "residential" | "commercial" | "all" | "";
@@ -351,6 +354,64 @@ export default function ConnectionsTable() {
         {/* PAGINATION FOOTER */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white">
           <div className="flex items-center gap-4">
+            <PaginationInfo
+              currentCount={connections.length}
+              totalCount={totalRecords}
+            />
+
+            <PaginationPageSizeSelect
+              pageSize={table.getState().pagination.pageSize}
+              onPageSizeChange={(newSize) => {
+                table.setPageSize(newSize);
+                table.setPageIndex(0);
+              }}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <PaginationButton
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronsLeft className="w-4 h-4" />
+            </PaginationButton>
+
+            <PaginationButton
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </PaginationButton>
+
+            <PaginationPageCounter
+              currentPage={table.getState().pagination.pageIndex + 1}
+              totalPages={totalPages}
+            />
+
+            <PaginationButton
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </PaginationButton>
+
+            <PaginationButton
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronsRight className="w-4 h-4" />
+            </PaginationButton>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+{
+  /* PAGINATION FOOTER
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white">
+          <div className="flex items-center gap-4">
             <p className="text-sm text-gray-500">
               Showing <span className="font-medium">{connections.length}</span>{" "}
               of <span className="font-medium">{totalRecords}</span> results
@@ -373,13 +434,6 @@ export default function ConnectionsTable() {
           </div>
 
           <div className="flex items-center gap-2">
-            <PaginationButton
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronsLeft className="w-4 h-4" />
-            </PaginationButton>
-
             <button
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
@@ -415,8 +469,5 @@ export default function ConnectionsTable() {
               <ChevronsRight className="w-4 h-4" />
             </button>
           </div>
-        </div>
-      </div>
-    </div>
-  );
+        </div> */
 }

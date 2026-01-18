@@ -1,23 +1,26 @@
-import { ComponentProps } from "react";
-import Button from "@/components/ui/Button"; // Import your main reusable Button
+import { ReactNode } from "react";
 
-// Inherit all standard Button props (onClick, disabled, etc.)
-type PaginationButtonProps = ComponentProps<typeof Button>;
+interface PaginationButtonProps {
+  onClick: () => void;
+  disabled: boolean;
+  children: ReactNode;
+  className?: string; // Optional: In case you want to override styles later
+}
 
 export default function PaginationButton({
-  className = "",
+  onClick,
+  disabled,
   children,
-  ...props
+  className = "",
 }: PaginationButtonProps) {
   return (
-    <Button
-      variant="outline" // Always use outline style
-      size="sm" // Always use small size
-      // Force square shape (w-8 h-8) and remove default padding (p-0) for icons
-      className={`w-8 h-8 p-0 ${className}`}
-      {...props}
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      type="button" // Best practice: explicit type prevents accidental form submission
+      className={`p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 ${className}`}
     >
       {children}
-    </Button>
+    </button>
   );
 }
