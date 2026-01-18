@@ -11,7 +11,7 @@ interface TablePaginationProps<TData> {
   totalRecords: number;
   totalPages: number;
   pageSizeOptions?: number[];
-  rowCount?: number; // Optional override for "Showing X results"
+  rowCount?: number;
 }
 
 export default function TablePagination<TData>({
@@ -25,14 +25,16 @@ export default function TablePagination<TData>({
 
   const currentRowsCount = rowCount ?? table.getRowModel().rows.length;
 
+  // Display "Page 1" even if index is 0
   const currentPage = pageIndex + 1;
 
-  const canPrevious = pageIndex > 0;
-  const canNext = currentPage < totalPages;
+  // Robust checks for buttons
+  const canPrevious = table.getCanPreviousPage();
+  const canNext = table.getCanNextPage();
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white rounded-b-xl">
-      {/* Info & Page Size */}
+      {/* Left: Info & Page Size */}
       <div className="flex items-center gap-4">
         <span className="text-sm text-gray-500">
           Showing <span className="font-medium">{currentRowsCount}</span> of{" "}
@@ -40,10 +42,9 @@ export default function TablePagination<TData>({
         </span>
 
         <select
-          value={pageSize} // This now correctly reflects table state
+          value={pageSize}
           onChange={(e) => {
             table.setPageSize(Number(e.target.value));
-            table.setPageIndex(0);
           }}
           className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 cursor-pointer"
         >
@@ -55,7 +56,7 @@ export default function TablePagination<TData>({
         </select>
       </div>
 
-      {/* Navigation Buttons */}
+      {/* Right: Navigation Buttons */}
       <div className="flex items-center gap-2">
         <button
           onClick={() => table.setPageIndex(0)}

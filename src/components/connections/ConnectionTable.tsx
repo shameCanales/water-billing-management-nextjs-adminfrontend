@@ -20,9 +20,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  Search,
   Filter,
-  Plus,
   Trash2,
   Edit,
   Eye,
@@ -31,7 +29,7 @@ import { useReactTable } from "@tanstack/react-table";
 import { getConnectionColumns } from "./ConnectionColumns";
 import AddConnectionModal from "./AddConnectionModal";
 import TableToolbar from "../ui/table/TableToolbar";
-import TablePagination from "../ui/table/TablePagination";
+import PaginationButton from "../ui/pagination/PaginationButton";
 
 type StatusFilterType = "active" | "disconnected" | "all" | "";
 type TypeFilterType = "residential" | "commercial" | "all" | "";
@@ -350,12 +348,74 @@ export default function ConnectionsTable() {
           </>
         )}
 
-        <TablePagination
-          table={table}
-          totalRecords={totalRecords}
-          totalPages={totalPages}
-          rowCount={connections.length}
-        />
+        {/* PAGINATION FOOTER */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white">
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-gray-500">
+              Showing <span className="font-medium">{connections.length}</span>{" "}
+              of <span className="font-medium">{totalRecords}</span> results
+            </p>
+
+            <select
+              value={table.getState().pagination.pageSize}
+              onChange={(e) => {
+                table.setPageSize(Number(e.target.value));
+                table.setPageIndex(0);
+              }}
+              className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+            >
+              {[10, 15, 20, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize} per page
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <PaginationButton
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronsLeft className="w-4 h-4" />
+            </PaginationButton>
+
+            <button
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+            >
+              <ChevronsLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            <span className="text-sm font-medium px-2 text-gray-700">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {totalPages || 1}
+            </span>
+
+            <button
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
+            >
+              <ChevronsRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
