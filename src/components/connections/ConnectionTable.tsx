@@ -33,6 +33,18 @@ import PaginationButton from "../ui/pagination/PaginationButton";
 import PaginationInfo from "../ui/pagination/PaginationInfo";
 import PaginationPageCounter from "../ui/pagination/PaginationCounter";
 import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect";
+import {
+  TableContainer,
+  TableScrollArea,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableSkeleton,
+  TableMobileList,
+} from "../ui/table/Table";
 
 type StatusFilterType = "active" | "disconnected" | "all" | "";
 type TypeFilterType = "residential" | "commercial" | "all" | "";
