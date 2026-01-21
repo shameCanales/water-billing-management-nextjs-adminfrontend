@@ -93,7 +93,7 @@ export default function ConnectionsTable() {
       setSelectedConnection(connection);
       dispatch(uiActions.openEditConnectionModal()); // Ensure this exists in uiSlice
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleDeleteClick = useCallback(
@@ -101,7 +101,7 @@ export default function ConnectionsTable() {
       setSelectedConnection(connection);
       dispatch(uiActions.openDeleteConnectionModal()); // Ensure this exists in uiSlice
     },
-    [dispatch]
+    [dispatch],
   );
 
   const columns = useMemo(
@@ -110,9 +110,9 @@ export default function ConnectionsTable() {
         openMenuRowId,
         setOpenMenuRowId,
         handleEditClick,
-        handleDeleteClick
+        handleDeleteClick,
       ),
-    [openMenuRowId, handleEditClick, handleDeleteClick]
+    [openMenuRowId, handleEditClick, handleDeleteClick],
   );
 
   const table = useReactTable({
@@ -182,90 +182,71 @@ export default function ConnectionsTable() {
         </div>
       </TableToolbar>
 
-      {/* --- TABLE CONTAINER --- */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden min-h-[400px]">
+      {/* --- ATOMIC TABLE COMPOSITION START --- */}
+      <TableContainer>
         {isLoading ? (
-          // Loading Skeleton
-          <div className="p-8 space-y-4">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-50 rounded animate-pulse" />
-            ))}
-          </div>
+          <TableSkeleton />
         ) : (
           <>
-            {/* DESKTOP TABLE */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
+            {/* DESKTOP VIEW */}
+            <TableScrollArea>
+              <Table>
+                <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <tr
-                      key={headerGroup.id}
-                      className="bg-gray-50 border-b border-gray-200"
-                    >
+                    <TableRow key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
-                        <th
+                        <TableHead
                           key={header.id}
-                          className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none"
                           onClick={header.column.getToggleSortingHandler()}
+                          className="cursor-pointer hover:bg-gray-100"
                         >
                           <div className="flex items-center gap-2">
                             {flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                             {{
                               asc: <span className="text-blue-600">▲</span>,
                               desc: <span className="text-blue-600">▼</span>,
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
-                        </th>
+                        </TableHead>
                       ))}
-                    </tr>
+                    </TableRow>
                   ))}
-                </thead>
-                <tbody className="divide-y divide-gray-100">
+                </TableHeader>
+                <TableBody>
                   {table.getRowModel().rows.length > 0 ? (
                     table.getRowModel().rows.map((row) => (
-                      <tr
-                        key={row.id}
-                        className="hover:bg-gray-50 transition-colors"
-                      >
+                      <TableRow key={row.id}>
                         {row.getVisibleCells().map((cell) => (
-                          <td
-                            key={cell.id}
-                            className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
-                          >
+                          <TableCell key={cell.id}>
                             {flexRender(
                               cell.column.columnDef.cell,
-                              cell.getContext()
+                              cell.getContext(),
                             )}
-                          </td>
+                          </TableCell>
                         ))}
-                      </tr>
+                      </TableRow>
                     ))
                   ) : (
-                    <tr>
-                      <td
+                    <TableRow>
+                      <TableCell
                         colSpan={columns.length}
                         className="px-6 py-12 text-center text-gray-500"
                       >
                         No connections found.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
-            </div>
+                </TableBody>
+              </Table>
+            </TableScrollArea>
 
-            {/* MOBILE VIEW (Cards) - Specific to Connections */}
-            <div className="md:hidden divide-y divide-gray-100">
+            {/* MOBILE VIEW */}
+            <TableMobileList>
               {table.getRowModel().rows.map((row) => {
                 const conn = row.original;
-                // Format name safely
-                const consumerName = conn.consumer
-                  ? `${conn.consumer.firstName} ${conn.consumer.lastName}`
-                  : "Deleted Consumer"; // Fallback text
-
                 return (
                   <div
                     key={row.id}
@@ -284,56 +265,44 @@ export default function ConnectionsTable() {
                       <div className="flex items-center gap-1">
                         <StatusBadge status={conn.status} />
 
-                        {/* Mobile Action Menu */}
                         <ActionMenu
                           isOpen={openMenuRowId === conn._id}
                           onToggle={() =>
                             setOpenMenuRowId(
-                              openMenuRowId === conn._id ? null : conn._id
+                              openMenuRowId === conn._id ? null : conn._id,
                             )
                           }
                           onClose={() => setOpenMenuRowId(null)}
                         >
-                          <ActionMenuItem
-                            onClick={() => {
-                              console.log("View", conn._id);
-                              setOpenMenuRowId(null);
-                            }}
-                          >
-                            <Eye size={14} /> View Details
+                          <ActionMenuItem onClick={() => {}}>
+                            <Eye size={14} /> View
+                          </ActionMenuItem>
+                          <ActionMenuItem onClick={() => handleEditClick(conn)}>
+                            <Edit size={14} /> Edit
                           </ActionMenuItem>
                           <ActionMenuItem
-                            onClick={() => {
-                              handleEditClick(conn);
-                              setOpenMenuRowId(null);
-                            }}
+                            className="text-red-600"
+                            onClick={() => handleDeleteClick(conn)}
                           >
-                            <Edit size={14} /> Edit Connection
-                          </ActionMenuItem>
-                          <ActionMenuItem
-                            className="text-red-600 hover:bg-red-50"
-                            onClick={() => {
-                              handleDeleteClick(conn);
-                              setOpenMenuRowId(null);
-                            }}
-                          >
-                            <Trash2 size={14} /> Delete Connection
+                            <Trash2 size={14} /> Delete
                           </ActionMenuItem>
                         </ActionMenu>
                       </div>
                     </div>
 
-                    {/* Consumer Info */}
+                    {/* Content */}
                     <div>
                       <div className="font-medium text-gray-900 text-base">
-                        {consumerName}
+                        {conn.consumer
+                          ? `${conn.consumer.firstName} ${conn.consumer.lastName}`
+                          : "Deleted Consumer"}
                       </div>
                       <div className="text-sm text-gray-500 truncate">
                         {conn.address}
                       </div>
                     </div>
 
-                    {/* Footer: Type + Date */}
+                    {/* Footer */}
                     <div className="flex justify-between items-end pt-2 border-t border-gray-50 mt-1">
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border 
@@ -341,8 +310,8 @@ export default function ConnectionsTable() {
                             conn.type === "residential"
                               ? "bg-blue-50 text-blue-700 border-blue-100"
                               : conn.type === "commercial"
-                              ? "bg-purple-50 text-purple-700 border-purple-100"
-                              : "bg-orange-50 text-orange-700 border-orange-100"
+                                ? "bg-purple-50 text-purple-700 border-purple-100"
+                                : "bg-orange-50 text-orange-700 border-orange-100"
                           }`}
                       >
                         {conn.type}
@@ -359,7 +328,7 @@ export default function ConnectionsTable() {
                   </div>
                 );
               })}
-            </div>
+            </TableMobileList>
           </>
         )}
 
@@ -415,10 +384,179 @@ export default function ConnectionsTable() {
             </PaginationButton>
           </div>
         </div>
-      </div>
+      </TableContainer>
     </div>
   );
 }
+
+// {/* --- TABLE CONTAINER --- */}
+// <TableContainer>
+//   {isLoading ? (
+//     <TableSkeleton />
+//   ) : (
+//     <>
+//       {/* DESKTOP TABLE */}
+//       <TableScrollArea>
+//         <Table>
+//           <TableHead>
+//             {table.getHeaderGroups().map((headerGroup) => (
+//               <TableRow key={headerGroup.id}>
+//                 {headerGroup.headers.map((header) => (
+//                   <TableHead
+//                     key={header.id}
+//                     onClick={header.column.getToggleSortingHandler()}
+//                     className="cursor-pointer hover:bg-gray-100"
+//                   >
+//                     <div className="flex items-center gap-2">
+//                       {flexRender(
+//                         header.column.columnDef.header,
+//                         header.getContext(),
+//                       )}
+//                       {{
+//                         asc: <span className="text-blue-600">▲</span>,
+//                         desc: <span className="text-blue-600">▼</span>,
+//                       }[header.column.getIsSorted() as string] ?? null}
+//                     </div>
+//                   </TableHead>
+//                 ))}
+//               </TableRow>
+//             ))}
+//           </TableHead>
+//           <TableBody>
+//             {table.getRowModel().rows.length > 0 ? (
+//               table.getRowModel().rows.map((row) => (
+//                 <TableRow key={row.id}>
+//                   {row.getVisibleCells().map((cell) => (
+//                     <TableCell key={cell.id}>
+//                       {flexRender(
+//                         cell.column.columnDef.cell,
+//                         cell.getContext(),
+//                       )}
+//                     </TableCell>
+//                   ))}
+//                 </TableRow>
+//               ))
+//             ) : (
+//               <TableRow>
+//                 <TableCell
+//                   colSpan={columns.length}
+//                   className="px-6 py-12 text-center text-gray-500"
+//                 >
+//                   No connections found.
+//                 </TableCell>
+//               </TableRow>
+//             )}
+//           </TableBody>
+//         </Table>
+//       </TableScrollArea>
+
+//       {/* MOBILE VIEW (Cards) - Specific to Connections */}
+//       <div className="md:hidden divide-y divide-gray-100">
+//         {table.getRowModel().rows.map((row) => {
+//           const conn = row.original;
+//           // Format name safely
+//           const consumerName = conn.consumer
+//             ? `${conn.consumer.firstName} ${conn.consumer.lastName}`
+//             : "Deleted Consumer"; // Fallback text
+
+//           return (
+//             <div
+//               key={row.id}
+//               className="p-4 flex flex-col gap-3 bg-white hover:bg-gray-50 transition-colors"
+//             >
+//               {/* Header: Meter # + Menu */}
+//               <div className="flex justify-between items-start">
+//                 <div>
+//                   <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">
+//                     Meter No.
+//                   </p>
+//                   <div className="font-bold text-gray-900 text-lg">
+//                     {conn.meterNumber}
+//                   </div>
+//                 </div>
+//                 <div className="flex items-center gap-1">
+//                   <StatusBadge status={conn.status} />
+
+//                   {/* Mobile Action Menu */}
+//                   <ActionMenu
+//                     isOpen={openMenuRowId === conn._id}
+//                     onToggle={() =>
+//                       setOpenMenuRowId(
+//                         openMenuRowId === conn._id ? null : conn._id,
+//                       )
+//                     }
+//                     onClose={() => setOpenMenuRowId(null)}
+//                   >
+//                     <ActionMenuItem
+//                       onClick={() => {
+//                         console.log("View", conn._id);
+//                         setOpenMenuRowId(null);
+//                       }}
+//                     >
+//                       <Eye size={14} /> View Details
+//                     </ActionMenuItem>
+//                     <ActionMenuItem
+//                       onClick={() => {
+//                         handleEditClick(conn);
+//                         setOpenMenuRowId(null);
+//                       }}
+//                     >
+//                       <Edit size={14} /> Edit Connection
+//                     </ActionMenuItem>
+//                     <ActionMenuItem
+//                       className="text-red-600 hover:bg-red-50"
+//                       onClick={() => {
+//                         handleDeleteClick(conn);
+//                         setOpenMenuRowId(null);
+//                       }}
+//                     >
+//                       <Trash2 size={14} /> Delete Connection
+//                     </ActionMenuItem>
+//                   </ActionMenu>
+//                 </div>
+//               </div>
+
+//               {/* Consumer Info */}
+//               <div>
+//                 <div className="font-medium text-gray-900 text-base">
+//                   {consumerName}
+//                 </div>
+//                 <div className="text-sm text-gray-500 truncate">
+//                   {conn.address}
+//                 </div>
+//               </div>
+
+//               {/* Footer: Type + Date */}
+//               <div className="flex justify-between items-end pt-2 border-t border-gray-50 mt-1">
+//                 <span
+//                   className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border
+//                     ${
+//                       conn.type === "residential"
+//                         ? "bg-blue-50 text-blue-700 border-blue-100"
+//                         : conn.type === "commercial"
+//                           ? "bg-purple-50 text-purple-700 border-purple-100"
+//                           : "bg-orange-50 text-orange-700 border-orange-100"
+//                     }`}
+//                 >
+//                   {conn.type}
+//                 </span>
+//                 <div className="text-right">
+//                   <p className="text-[10px] text-gray-400 uppercase font-semibold">
+//                     Connected
+//                   </p>
+//                   <p className="text-xs font-medium text-gray-700">
+//                     {new Date(conn.connectionDate).toLocaleDateString()}
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </>
+//   )}
+
+// </TableContainer>
 
 {
   /* PAGINATION FOOTER
