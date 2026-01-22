@@ -12,20 +12,20 @@ import {
 
 export const getAllConsumers = async (
   params: ConsumerQueryParams = {}, // default to empty object
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   const response = await api.get<APIResponse<PaginatedConsumerResult>>(
     "/consumers",
     {
       params, // Axios automatically converts this object to ?page=1&limit=10...
       signal,
-    }
+    },
   );
   return response.data.data;
 };
 
 export const addConsumer = async (
-  data: CreateConsumerData
+  data: CreateConsumerData,
 ): Promise<CreateConsumerResponse> => {
   const response = await api.post("/consumers", data);
   return response.data;
@@ -33,14 +33,14 @@ export const addConsumer = async (
 
 export const editConsumer = async (
   id: string,
-  data: EditConsumerData
+  data: EditConsumerData,
 ): Promise<APIResponse<Consumer>> => {
   const response = await api.patch(`/consumers/${id}`, data);
   return response.data;
 };
 
 export const deleteConsumer = async (
-  id: string
+  id: string,
 ): Promise<{
   success: boolean;
   message: string;
@@ -51,7 +51,7 @@ export const deleteConsumer = async (
 
 export const updateConsumerStatus = async (
   id: string,
-  status: "active" | "suspended"
+  status: "active" | "suspended",
 ): Promise<UpdateConsumerResponse> => {
   const response = await api.patch(`/consumers/${id}/status`, { status });
   return response.data;

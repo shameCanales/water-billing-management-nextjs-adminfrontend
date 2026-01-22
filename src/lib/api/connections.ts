@@ -9,21 +9,31 @@ import {
 
 export const getAllConnections = async (
   params: ConnectionQueryParams,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) => {
   const response = await api.get<APIResponse<PaginatedConnectionResult>>(
     "/connections",
-    { params, signal }
+    { params, signal },
   );
   return response.data.data;
 };
 
 export const addConnection = async (
-  data: CreateConnectionData
+  data: CreateConnectionData,
 ): Promise<APIResponse<Connection>> => {
   const response = await api.post<APIResponse<Connection>>(
     "/connections",
-    data
+    data,
   );
+  return response.data;
+};
+
+export const deleteConnection = async (
+  id: string,
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
+  const response = await api.delete(`/connections/${id}`);
   return response.data;
 };
