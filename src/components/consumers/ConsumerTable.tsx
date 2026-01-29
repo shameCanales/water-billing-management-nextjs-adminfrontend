@@ -34,7 +34,7 @@ type StatusFilterType = "active" | "suspended" | "all" | "";
 export default function ConsumerTable() {
   const dispatch = useDispatch<AppDispatch>();
   const [selectedConsumer, setSelectedConsumer] = useState<Consumer | null>(
-    null
+    null,
   );
 
   // ==========================================
@@ -126,7 +126,7 @@ export default function ConsumerTable() {
       setSelectedConsumer(consumer);
       dispatch(uiActions.openEditConsumerModal()); // Open the modal via Redux
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleDeleteClick = useCallback(
@@ -134,7 +134,7 @@ export default function ConsumerTable() {
       setSelectedConsumer(consumer);
       dispatch(uiActions.openDeleteConsumerModal()); // You need to add this to Redux uiSlice
     },
-    [dispatch]
+    [dispatch],
   );
 
   const { mutate: updateConsumerStatus, isPending: updatingConsumerStatus } =
@@ -144,7 +144,7 @@ export default function ConsumerTable() {
     (id: string, status: "active" | "suspended") => {
       updateConsumerStatus({ id, status });
     },
-    [updateConsumerStatus]
+    [updateConsumerStatus],
   );
 
   // You are using useMemo here. This is a performance trick. It says: "Only re-create this column definition if openMenuRowId changes." If you didn't do this, the table logic would reset every time you typed a letter in the search bar.s
@@ -155,14 +155,14 @@ export default function ConsumerTable() {
         setOpenMenuRowId,
         handleEditClick,
         handleDeleteClick,
-        handleUpdateConsumerStatus
+        handleUpdateConsumerStatus,
       ),
     [
       openMenuRowId,
       handleDeleteClick,
       handleEditClick,
       handleUpdateConsumerStatus,
-    ]
+    ],
   );
 
   const table = useReactTable({
@@ -198,11 +198,6 @@ export default function ConsumerTable() {
       </div>
     );
   }
-
-  // const handleEditClick = (consumer: Consumer) => {
-  //   setSelectedConsumer(consumer);
-  //   dispatch(uiActions.openEditConsumerModal()); // Open the modal via Redux
-  // };
 
   return (
     <div className="space-y-6 font-sans mt-8">
@@ -288,7 +283,7 @@ export default function ConsumerTable() {
                             {/* flexRender: Renders the header text defined in columns.tsx */}
                             {flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                             {/* Sort Indicator Arrows */}
                             {{
@@ -317,7 +312,7 @@ export default function ConsumerTable() {
                             {/* flexRender: Renders the custom cell (like StatusBadge) defined in columns.tsx */}
                             {flexRender(
                               cell.column.columnDef.cell,
-                              cell.getContext()
+                              cell.getContext(),
                             )}
                           </td>
                         ))}

@@ -11,9 +11,8 @@ import {
 } from "@tanstack/react-table";
 import { useGetAllConnections } from "@/hooks/connections/useGetAllConnections";
 import { uiActions } from "@/lib/store/uiSlice";
-import { ActionMenuItem } from "../ActionMenu";
+import { ActionMenu, ActionMenuItem } from "../ActionMenu";
 import { StatusBadge } from "../ui/StatusBadge";
-import { ActionMenu } from "../ActionMenu";
 
 import {
   ChevronLeft,
@@ -33,6 +32,7 @@ import PaginationButton from "../ui/pagination/PaginationButton";
 import PaginationInfo from "../ui/pagination/PaginationInfo";
 import PaginationPageCounter from "../ui/pagination/PaginationCounter";
 import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect";
+import DeleteConnectionModal from "./DeleteConnectionModal";
 import {
   TableContainer,
   TableScrollArea,
@@ -67,6 +67,10 @@ export default function ConnectionsTable() {
   const [openMenuRowId, setOpenMenuRowId] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("📍 openMenuRowId changed to:", openMenuRowId);
+  }, [openMenuRowId]);
+
+  useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
     return () => clearTimeout(timer);
   }, [searchTerm]);
@@ -91,27 +95,42 @@ export default function ConnectionsTable() {
   const handleEditClick = useCallback(
     (connection: Connection) => {
       setSelectedConnection(connection);
-      dispatch(uiActions.openEditConnectionModal()); // Ensure this exists in uiSlice
+      dispatch(uiActions.openEditConnectionModal());
     },
     [dispatch],
   );
 
   const handleDeleteClick = useCallback(
     (connection: Connection) => {
+      console.log("🟢 handleDeleteClick CALLED");
+      console.log("🟢 Connection object:", connection);
+      console.log("🟢 Connection ID:", connection._id);
+
       setSelectedConnection(connection);
-      dispatch(uiActions.openDeleteConnectionModal()); // Ensure this exists in uiSlice
+      console.log("🟢 About to dispatch openDeleteConnectionModal");
+      dispatch(uiActions.openDeleteConnectionModal());
+      console.log("🟢 Dispatch complete");
     },
     [dispatch],
   );
 
   const columns = useMemo(
-    () =>
-      getConnectionColumns(
+    // the problem might be here
+    () => {
+      const cols = getConnectionColumns(
         openMenuRowId,
         setOpenMenuRowId,
         handleEditClick,
         handleDeleteClick,
-      ),
+      );
+      console.log("🟣 COLUMNS CREATED:", cols);
+      console.log("🟣 Number of columns:", cols.length);
+      console.log(
+        "🟣 Actions column:",
+        cols.find((c) => c.id === "actions"),
+      );
+      return cols;
+    },
     [openMenuRowId, handleEditClick, handleDeleteClick],
   );
 
@@ -140,10 +159,9 @@ export default function ConnectionsTable() {
 
   return (
     <div className="space-y-6 font-sans mt-8">
-      {/* --- MODALS --- */}
       <AddConnectionModal />
-      {/* <EditConnectionModal connectionToEdit={selectedConnection} />
-      <DeleteConnectionModal connectionToDelete={selectedConnection} /> */}
+      {/* <EditConnectionModal connectionToEdit={selectedConnection} /> */}
+      <DeleteConnectionModal connectionToDelete={selectedConnection} />
 
       <TableToolbar
         searchTerm={searchTerm}
@@ -185,20 +203,27 @@ export default function ConnectionsTable() {
       {/* --- ATOMIC TABLE COMPOSITION START --- */}
       <TableContainer>
         {isLoading ? (
-          <TableSkeleton />
+          <div className="p-8 space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-12 bg-gray-50 rounded animate-pulse" />
+            ))}
+          </div>
         ) : (
           <>
             {/* DESKTOP VIEW */}
-            <TableScrollArea>
-              <Table>
-                <TableHeader>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
+                    <tr
+                      key={headerGroup.id}
+                      className="bg-gray-50 border-b border-gray-200"
+                    >
                       {headerGroup.headers.map((header) => (
-                        <TableHead
+                        <th
                           key={header.id}
+                          className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none"
                           onClick={header.column.getToggleSortingHandler()}
-                          className="cursor-pointer hover:bg-gray-100"
                         >
                           <div className="flex items-center gap-2">
                             {flexRender(
@@ -210,125 +235,132 @@ export default function ConnectionsTable() {
                               desc: <span className="text-blue-600">▼</span>,
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
-                        </TableHead>
+                        </th>
                       ))}
-                    </TableRow>
+                    </tr>
                   ))}
-                </TableHeader>
-                <TableBody>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
                   {table.getRowModel().rows.length > 0 ? (
                     table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id}>
+                      <tr
+                        key={row.id}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
+                          <td
+                            key={cell.id}
+                            className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
+                          >
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext(),
                             )}
-                          </TableCell>
+                          </td>
                         ))}
-                      </TableRow>
+                      </tr>
                     ))
                   ) : (
-                    <TableRow>
-                      <TableCell
+                    <tr>
+                      <td
                         colSpan={columns.length}
                         className="px-6 py-12 text-center text-gray-500"
                       >
                         No connections found.
-                      </TableCell>
-                    </TableRow>
+                      </td>
+                    </tr>
                   )}
-                </TableBody>
-              </Table>
-            </TableScrollArea>
+                </tbody>
+              </table>
+            </div>
 
-            {/* MOBILE VIEW */}
-            <TableMobileList>
+          {/* MOBILE VIEW */}
+            <div className="md:hidden space-y-4">
               {table.getRowModel().rows.map((row) => {
                 const conn = row.original;
                 return (
                   <div
                     key={row.id}
-                    className="p-4 flex flex-col gap-3 bg-white hover:bg-gray-50 transition-colors"
+                    className="bg-white p-4 border-b border-gray-200 flex flex-col gap-3"
                   >
-                    {/* Header: Meter # + Menu */}
+                    {/* Header: Meter # & Status */}
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">
                           Meter No.
                         </p>
-                        <div className="font-bold text-gray-900 text-lg">
+                        <div className="font-bold text-gray-900 text-lg font-mono">
                           {conn.meterNumber}
                         </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <StatusBadge status={conn.status} />
-
-                        <ActionMenu
-                          isOpen={openMenuRowId === conn._id}
-                          onToggle={() =>
-                            setOpenMenuRowId(
-                              openMenuRowId === conn._id ? null : conn._id,
-                            )
-                          }
-                          onClose={() => setOpenMenuRowId(null)}
-                        >
-                          <ActionMenuItem onClick={() => {}}>
-                            <Eye size={14} /> View
-                          </ActionMenuItem>
-                          <ActionMenuItem onClick={() => handleEditClick(conn)}>
-                            <Edit size={14} /> Edit
-                          </ActionMenuItem>
-                          <ActionMenuItem
-                            className="text-red-600"
-                            onClick={() => handleDeleteClick(conn)}
-                          >
-                            <Trash2 size={14} /> Delete
-                          </ActionMenuItem>
-                        </ActionMenu>
-                      </div>
+                      <StatusBadge status={conn.status} />
                     </div>
 
-                    {/* Content */}
+                    {/* Content: Consumer Info */}
                     <div>
                       <div className="font-medium text-gray-900 text-base">
-                        {conn.consumer
-                          ? `${conn.consumer.firstName} ${conn.consumer.lastName}`
-                          : "Deleted Consumer"}
+                        {conn.consumer ? (
+                          `${conn.consumer.firstName} ${conn.consumer.lastName}`
+                        ) : (
+                          <span className="text-red-500 italic text-sm">
+                            Deleted Consumer
+                          </span>
+                        )}
                       </div>
-                      <div className="text-sm text-gray-500 truncate">
+                      <div className="text-sm text-gray-500 truncate mt-0.5">
                         {conn.address}
                       </div>
                     </div>
 
-                    {/* Footer */}
-                    <div className="flex justify-between items-end pt-2 border-t border-gray-50 mt-1">
+                    {/* Info Row: Type & Date */}
+                    <div className="flex justify-between items-center py-2 border-t border-gray-50 border-dashed">
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border 
                           ${
                             conn.type === "residential"
                               ? "bg-blue-50 text-blue-700 border-blue-100"
                               : conn.type === "commercial"
-                                ? "bg-purple-50 text-purple-700 border-purple-100"
-                                : "bg-orange-50 text-orange-700 border-orange-100"
+                              ? "bg-purple-50 text-purple-700 border-purple-100"
+                              : "bg-orange-50 text-orange-700 border-orange-100"
                           }`}
                       >
                         {conn.type}
                       </span>
-                      <div className="text-right">
-                        <p className="text-[10px] text-gray-400 uppercase font-semibold">
-                          Connected
-                        </p>
-                        <p className="text-xs font-medium text-gray-700">
+                      <div className="text-right flex items-center gap-2">
+                         <span className="text-[10px] text-gray-400 uppercase font-semibold">Connected:</span>
+                         <span className="text-xs font-medium text-gray-700">
                           {new Date(conn.connectionDate).toLocaleDateString()}
-                        </p>
+                        </span>
                       </div>
+                    </div>
+
+                    {/* ACTION BUTTONS ROW */}
+                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100">
+                       <button 
+                         onClick={() => console.log("View", conn._id)}
+                         className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded hover:bg-gray-100 transition-colors border border-gray-200"
+                       >
+                         <Eye size={14} /> View
+                       </button>
+                       
+                       <button 
+                         onClick={() => handleEditClick(conn)}
+                         className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors border border-blue-100"
+                       >
+                         <Edit size={14} /> Edit
+                       </button>
+
+                       <button 
+                         onClick={() => handleDeleteClick(conn)}
+                         className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-red-600 bg-red-50 rounded hover:bg-red-100 transition-colors border border-red-100"
+                       >
+                         <Trash2 size={14} /> Delete
+                       </button>
                     </div>
                   </div>
                 );
               })}
-            </TableMobileList>
+            </div>
           </>
         )}
 
@@ -389,235 +421,25 @@ export default function ConnectionsTable() {
   );
 }
 
-// {/* --- TABLE CONTAINER --- */}
-// <TableContainer>
-//   {isLoading ? (
-//     <TableSkeleton />
-//   ) : (
-//     <>
-//       {/* DESKTOP TABLE */}
-//       <TableScrollArea>
-//         <Table>
-//           <TableHead>
-//             {table.getHeaderGroups().map((headerGroup) => (
-//               <TableRow key={headerGroup.id}>
-//                 {headerGroup.headers.map((header) => (
-//                   <TableHead
-//                     key={header.id}
-//                     onClick={header.column.getToggleSortingHandler()}
-//                     className="cursor-pointer hover:bg-gray-100"
-//                   >
-//                     <div className="flex items-center gap-2">
-//                       {flexRender(
-//                         header.column.columnDef.header,
-//                         header.getContext(),
-//                       )}
-//                       {{
-//                         asc: <span className="text-blue-600">▲</span>,
-//                         desc: <span className="text-blue-600">▼</span>,
-//                       }[header.column.getIsSorted() as string] ?? null}
-//                     </div>
-//                   </TableHead>
-//                 ))}
-//               </TableRow>
-//             ))}
-//           </TableHead>
-//           <TableBody>
-//             {table.getRowModel().rows.length > 0 ? (
-//               table.getRowModel().rows.map((row) => (
-//                 <TableRow key={row.id}>
-//                   {row.getVisibleCells().map((cell) => (
-//                     <TableCell key={cell.id}>
-//                       {flexRender(
-//                         cell.column.columnDef.cell,
-//                         cell.getContext(),
-//                       )}
-//                     </TableCell>
-//                   ))}
-//                 </TableRow>
-//               ))
-//             ) : (
-//               <TableRow>
-//                 <TableCell
-//                   colSpan={columns.length}
-//                   className="px-6 py-12 text-center text-gray-500"
-//                 >
-//                   No connections found.
-//                 </TableCell>
-//               </TableRow>
-//             )}
-//           </TableBody>
-//         </Table>
-//       </TableScrollArea>
-
-//       {/* MOBILE VIEW (Cards) - Specific to Connections */}
-//       <div className="md:hidden divide-y divide-gray-100">
-//         {table.getRowModel().rows.map((row) => {
-//           const conn = row.original;
-//           // Format name safely
-//           const consumerName = conn.consumer
-//             ? `${conn.consumer.firstName} ${conn.consumer.lastName}`
-//             : "Deleted Consumer"; // Fallback text
-
-//           return (
-//             <div
-//               key={row.id}
-//               className="p-4 flex flex-col gap-3 bg-white hover:bg-gray-50 transition-colors"
-//             >
-//               {/* Header: Meter # + Menu */}
-//               <div className="flex justify-between items-start">
-//                 <div>
-//                   <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">
-//                     Meter No.
-//                   </p>
-//                   <div className="font-bold text-gray-900 text-lg">
-//                     {conn.meterNumber}
-//                   </div>
-//                 </div>
-//                 <div className="flex items-center gap-1">
-//                   <StatusBadge status={conn.status} />
-
-//                   {/* Mobile Action Menu */}
-//                   <ActionMenu
-//                     isOpen={openMenuRowId === conn._id}
-//                     onToggle={() =>
-//                       setOpenMenuRowId(
-//                         openMenuRowId === conn._id ? null : conn._id,
-//                       )
-//                     }
-//                     onClose={() => setOpenMenuRowId(null)}
-//                   >
-//                     <ActionMenuItem
-//                       onClick={() => {
-//                         console.log("View", conn._id);
-//                         setOpenMenuRowId(null);
-//                       }}
-//                     >
-//                       <Eye size={14} /> View Details
-//                     </ActionMenuItem>
-//                     <ActionMenuItem
-//                       onClick={() => {
-//                         handleEditClick(conn);
-//                         setOpenMenuRowId(null);
-//                       }}
-//                     >
-//                       <Edit size={14} /> Edit Connection
-//                     </ActionMenuItem>
-//                     <ActionMenuItem
-//                       className="text-red-600 hover:bg-red-50"
-//                       onClick={() => {
-//                         handleDeleteClick(conn);
-//                         setOpenMenuRowId(null);
-//                       }}
-//                     >
-//                       <Trash2 size={14} /> Delete Connection
-//                     </ActionMenuItem>
-//                   </ActionMenu>
-//                 </div>
-//               </div>
-
-//               {/* Consumer Info */}
-//               <div>
-//                 <div className="font-medium text-gray-900 text-base">
-//                   {consumerName}
-//                 </div>
-//                 <div className="text-sm text-gray-500 truncate">
-//                   {conn.address}
-//                 </div>
-//               </div>
-
-//               {/* Footer: Type + Date */}
-//               <div className="flex justify-between items-end pt-2 border-t border-gray-50 mt-1">
-//                 <span
-//                   className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border
-//                     ${
-//                       conn.type === "residential"
-//                         ? "bg-blue-50 text-blue-700 border-blue-100"
-//                         : conn.type === "commercial"
-//                           ? "bg-purple-50 text-purple-700 border-purple-100"
-//                           : "bg-orange-50 text-orange-700 border-orange-100"
-//                     }`}
-//                 >
-//                   {conn.type}
-//                 </span>
-//                 <div className="text-right">
-//                   <p className="text-[10px] text-gray-400 uppercase font-semibold">
-//                     Connected
-//                   </p>
-//                   <p className="text-xs font-medium text-gray-700">
-//                     {new Date(conn.connectionDate).toLocaleDateString()}
-//                   </p>
-//                 </div>
-//               </div>
-//             </div>
-//           );
-//         })}
+// <div className="md:hidden divide-y divide-gray-100">
+//   {table.getRowModel().rows.map((row) => {
+//     const conn = row.original;
+//     return (
+//       <div key={row.id} className="p-4 flex flex-col gap-3">
+//         <div className="flex justify-between items-start">
+//           <div>
+//             <h3 className="text-sm font-bold text-gray-900">
+//               Meter: {conn.meterNumber}
+//             </h3>
+//             <p className="text-xs text-gray-500">
+//               {conn.consumer
+//                 ? `${conn.consumer.firstName} ${conn.consumer.lastName}`
+//                 : "No Consumer"}
+//             </p>
+//           </div>
+//           <StatusBadge status={conn.status} />
+//         </div>
 //       </div>
-//     </>
-//   )}
-
-// </TableContainer>
-
-{
-  /* PAGINATION FOOTER
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white">
-          <div className="flex items-center gap-4">
-            <p className="text-sm text-gray-500">
-              Showing <span className="font-medium">{connections.length}</span>{" "}
-              of <span className="font-medium">{totalRecords}</span> results
-            </p>
-
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-                table.setPageIndex(0);
-              }}
-              className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-            >
-              {[10, 15, 20, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize} per page
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
-            >
-              <ChevronsLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-
-            <span className="text-sm font-medium px-2 text-gray-700">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {totalPages || 1}
-            </span>
-
-            <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-600"
-            >
-              <ChevronsRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div> */
-}
+//     );
+//   })}
+// </div>;

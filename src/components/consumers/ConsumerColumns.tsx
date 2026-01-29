@@ -141,6 +141,7 @@ export const getConsumerColumns = (
           <ActionMenuItem
             className="text-red-600 hover:bg-red-50"
             onClick={() => {
+              console.log("consuCol Delete", row.original._id); // Trigger the Delete Handler
               onDelete(row.original); // Trigger the Delete Handler
               setOpenMenuId(null);
             }}
