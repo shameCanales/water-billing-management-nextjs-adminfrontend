@@ -44,3 +44,11 @@ export interface CreateConnectionData {
   type: "residential" | "commercial";
   status: "active" | "disconnected";
 }
+
+export interface EditConnectionData {
+  meterNumber?: number;
+  address?: string;
+  connectionDate?: string;
+  type?: "residential" | "commercial";
+  status?: "active" | "disconnected";
+}

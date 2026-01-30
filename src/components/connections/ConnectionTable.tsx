@@ -33,6 +33,7 @@ import PaginationInfo from "../ui/pagination/PaginationInfo";
 import PaginationPageCounter from "../ui/pagination/PaginationCounter";
 import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect";
 import DeleteConnectionModal from "./DeleteConnectionModal";
+import EditConnectionModal from "./EditConnectionModal";
 import {
   TableContainer,
   TableScrollArea,
@@ -160,7 +161,7 @@ export default function ConnectionsTable() {
   return (
     <div className="space-y-6 font-sans mt-8">
       <AddConnectionModal />
-      {/* <EditConnectionModal connectionToEdit={selectedConnection} /> */}
+      <EditConnectionModal connectionToEdit={selectedConnection} />
       <DeleteConnectionModal connectionToDelete={selectedConnection} />
 
       <TableToolbar

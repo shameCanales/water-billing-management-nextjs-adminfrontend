@@ -14,9 +14,7 @@ export const getConnectionColumns = (
   onEdit: (connection: Connection) => void,
   onDelete: (connection: Connection) => void, // also check here the problem
 ): ColumnDef<Connection>[] => {
-  console.log("🔵 getConnectionColumns CALLED");
-  console.log("🔵 onDelete function:", onDelete);
-  console.log("🔵 onEdit function:", onEdit);
+
 
   return [
     {

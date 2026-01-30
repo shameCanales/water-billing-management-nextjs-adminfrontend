@@ -5,6 +5,7 @@ import {
   PaginatedConnectionResult,
   CreateConnectionData,
   Connection,
+  EditConnectionData,
 } from "@/types/connections";
 
 export const getAllConnections = async (
@@ -35,5 +36,13 @@ export const deleteConnection = async (
   message: string;
 }> => {
   const response = await api.delete(`/connections/${id}`);
+  return response.data;
+};
+
+export const editConnection = async (
+  id: string,
+  data: EditConnectionData,
+): Promise<APIResponse<Connection>> => {
+  const response = await api.patch(`/connections/${id}`, data);
   return response.data;
 };
