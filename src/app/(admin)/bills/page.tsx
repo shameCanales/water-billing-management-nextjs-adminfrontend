@@ -1,4 +1,4 @@
-import ConnectionsTable from "@/components/connections/ConnectionTable";
+import BillsTable from "@/components/bills/BillTable";
 
 export default function BillsPage() {
   return (
@@ -9,7 +9,7 @@ export default function BillsPage() {
           Manage bills of consumer&apos;s connections
         </p>
       </div>
-      <ConnectionsTable />
+      <BillsTable />
     </div>
   );
 }

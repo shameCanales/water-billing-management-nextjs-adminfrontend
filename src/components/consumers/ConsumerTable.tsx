@@ -28,6 +28,16 @@ import { Consumer } from "@/types/consumers";
 import EditConsumerModal from "./EditConsumerModal";
 import DeleteConsumerModal from "./DeleteConsumerModal";
 import { useUpdateConsumerStatus } from "@/hooks/consumers/useUpdateConsumerStatus";
+import TableToolbar from "../ui/table/TableToolbar";
+import { TableContainer } from "../ui/table/Table";
+import PaginationButton from "../ui/pagination/PaginationButton";
+import PaginationInfo from "../ui/pagination/PaginationInfo";
+import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect";
+import PaginationPageCounter from "../ui/pagination/PaginationCounter";
+import {
+  PaginationContainer,
+  PaginationFlexRow,
+} from "../ui/pagination/PaginationContainer";
 
 type StatusFilterType = "active" | "suspended" | "all" | "";
 
@@ -205,53 +215,33 @@ export default function ConsumerTable() {
       <EditConsumerModal consumerToEdit={selectedConsumer} />
       <DeleteConsumerModal consumerToDelete={selectedConsumer} />
 
-      {/* TOOLBAR SECTION
-        Contains: Search Bar, Status Filter, and Add Button
-      */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          {/* Search Input (Styled gray background) */}
-          <div className="relative w-full sm:w-[320px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search by name, email or mobile..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400"
-            />
-          </div>
-
-          {/* Status Filter Dropdown */}
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <select
-              value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(e.target.value as StatusFilterType)
-              }
-              className="appearance-none w-full sm:w-40 pl-10 pr-8 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-gray-600"
-            >
-              <option value="">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="suspended">Suspended</option>
-            </select>
-          </div>
+      <TableToolbar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Search by name, email, or mobile..."
+        onAddClick={() => dispatch(uiActions.openAddConsumerModal())}
+        addButtonLabel="Add Consumer"
+      >
+        {/* Status Filter Dropdown */}
+        <div className="relative">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as StatusFilterType)
+            }
+            className="appearance-none w-full sm:w-40 pl-10 pr-8 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-gray-600"
+          >
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+          </select>
         </div>
-
-        {/* Add Consumer Button (Blue) */}
-        <button
-          onClick={() => dispatch(uiActions.openAddConsumerModal())}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm w-full sm:w-auto justify-center"
-        >
-          <Plus size={18} />
-          Add Consumer
-        </button>
-      </div>
+      </TableToolbar>
 
       {/* TABLE CONTAINER
        */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden min-h-[400px]">
+      <TableContainer>
         {isLoading ? (
           // Loading Skeleton
           <div className="p-8 space-y-4">
@@ -359,71 +349,60 @@ export default function ConsumerTable() {
           </>
         )}
 
-        {/* PAGINATION FOOTER
-          Contains "Showing X results", Limit Dropdown, and Nav Buttons
-        */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white">
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
-              Showing <span className="font-medium">{consumers.length}</span> of{" "}
-              <span className="font-medium">{totalRecords}</span> results
-            </span>
+        <PaginationContainer>
+          <PaginationFlexRow>
+            <PaginationInfo
+              currentCount={consumers.length}
+              totalCount={totalRecords}
+            />
 
-            {/* Limit Selector */}
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-                table.setPageIndex(0); // ✅ Best Practice: Reset to page 1 to avoid empty views
+            <PaginationPageSizeSelect
+              pageSize={table.getState().pagination.pageSize}
+              onPageSizeChange={(newSize) => {
+                table.setPageSize(newSize);
+                table.setPageIndex(0);
               }}
-              className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-            >
-              {[10, 15, 20, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize} per page
-                </option>
-              ))}
-            </select>
-          </div>
+            />
+          </PaginationFlexRow>
 
-          <div className="flex items-center gap-2">
-            <button
+          <PaginationFlexRow>
+            <PaginationButton
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
             >
               <ChevronsLeft className="w-4 h-4" />
-            </button>
-            <button
+            </PaginationButton>
+
+            <PaginationButton
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
             >
               <ChevronLeft className="w-4 h-4" />
-            </button>
+            </PaginationButton>
 
-            <span className="text-sm font-medium px-2 text-gray-700">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {totalPages || 1}
-            </span>
+            <PaginationPageCounter
+              currentPage={table.getState().pagination.pageIndex + 1}
+              totalPages={totalPages}
+            />
 
-            <button
+            <PaginationButton
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
             >
               <ChevronRight className="w-4 h-4" />
-            </button>
-            <button
+            </PaginationButton>
+
+            <PaginationButton
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
             >
               <ChevronsRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
+            </PaginationButton>
+          </PaginationFlexRow>
+        </PaginationContainer>
+
+      
+      </TableContainer>
     </div>
   );
 }

@@ -11,7 +11,6 @@ import {
 } from "@tanstack/react-table";
 import { useGetAllConnections } from "@/hooks/connections/useGetAllConnections";
 import { uiActions } from "@/lib/store/uiSlice";
-import { ActionMenu, ActionMenuItem } from "../ActionMenu";
 import { StatusBadge } from "../ui/StatusBadge";
 
 import {
@@ -35,17 +34,10 @@ import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect"
 import DeleteConnectionModal from "./DeleteConnectionModal";
 import EditConnectionModal from "./EditConnectionModal";
 import {
-  TableContainer,
-  TableScrollArea,
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-  TableSkeleton,
-  TableMobileList,
-} from "../ui/table/Table";
+  PaginationContainer,
+  PaginationFlexRow,
+} from "../ui/pagination/PaginationContainer";
+import { TableContainer } from "../ui/table/Table";
 
 type StatusFilterType = "active" | "disconnected" | "all" | "";
 type TypeFilterType = "residential" | "commercial" | "all" | "";
@@ -66,10 +58,6 @@ export default function ConnectionsTable() {
   });
 
   const [openMenuRowId, setOpenMenuRowId] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log("📍 openMenuRowId changed to:", openMenuRowId);
-  }, [openMenuRowId]);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
@@ -103,14 +91,8 @@ export default function ConnectionsTable() {
 
   const handleDeleteClick = useCallback(
     (connection: Connection) => {
-      console.log("🟢 handleDeleteClick CALLED");
-      console.log("🟢 Connection object:", connection);
-      console.log("🟢 Connection ID:", connection._id);
-
       setSelectedConnection(connection);
-      console.log("🟢 About to dispatch openDeleteConnectionModal");
       dispatch(uiActions.openDeleteConnectionModal());
-      console.log("🟢 Dispatch complete");
     },
     [dispatch],
   );
@@ -124,12 +106,7 @@ export default function ConnectionsTable() {
         handleEditClick,
         handleDeleteClick,
       );
-      console.log("🟣 COLUMNS CREATED:", cols);
-      console.log("🟣 Number of columns:", cols.length);
-      console.log(
-        "🟣 Actions column:",
-        cols.find((c) => c.id === "actions"),
-      );
+
       return cols;
     },
     [openMenuRowId, handleEditClick, handleDeleteClick],
@@ -275,7 +252,7 @@ export default function ConnectionsTable() {
               </table>
             </div>
 
-          {/* MOBILE VIEW */}
+            {/* MOBILE VIEW */}
             <div className="md:hidden space-y-4">
               {table.getRowModel().rows.map((row) => {
                 const conn = row.original;
@@ -321,15 +298,17 @@ export default function ConnectionsTable() {
                             conn.type === "residential"
                               ? "bg-blue-50 text-blue-700 border-blue-100"
                               : conn.type === "commercial"
-                              ? "bg-purple-50 text-purple-700 border-purple-100"
-                              : "bg-orange-50 text-orange-700 border-orange-100"
+                                ? "bg-purple-50 text-purple-700 border-purple-100"
+                                : "bg-orange-50 text-orange-700 border-orange-100"
                           }`}
                       >
                         {conn.type}
                       </span>
                       <div className="text-right flex items-center gap-2">
-                         <span className="text-[10px] text-gray-400 uppercase font-semibold">Connected:</span>
-                         <span className="text-xs font-medium text-gray-700">
+                        <span className="text-[10px] text-gray-400 uppercase font-semibold">
+                          Connected:
+                        </span>
+                        <span className="text-xs font-medium text-gray-700">
                           {new Date(conn.connectionDate).toLocaleDateString()}
                         </span>
                       </div>
@@ -337,26 +316,26 @@ export default function ConnectionsTable() {
 
                     {/* ACTION BUTTONS ROW */}
                     <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100">
-                       <button 
-                         onClick={() => console.log("View", conn._id)}
-                         className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded hover:bg-gray-100 transition-colors border border-gray-200"
-                       >
-                         <Eye size={14} /> View
-                       </button>
-                       
-                       <button 
-                         onClick={() => handleEditClick(conn)}
-                         className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors border border-blue-100"
-                       >
-                         <Edit size={14} /> Edit
-                       </button>
+                      <button
+                        onClick={() => console.log("View", conn._id)}
+                        className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-gray-600 bg-gray-50 rounded hover:bg-gray-100 transition-colors border border-gray-200"
+                      >
+                        <Eye size={14} /> View
+                      </button>
 
-                       <button 
-                         onClick={() => handleDeleteClick(conn)}
-                         className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-red-600 bg-red-50 rounded hover:bg-red-100 transition-colors border border-red-100"
-                       >
-                         <Trash2 size={14} /> Delete
-                       </button>
+                      <button
+                        onClick={() => handleEditClick(conn)}
+                        className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors border border-blue-100"
+                      >
+                        <Edit size={14} /> Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteClick(conn)}
+                        className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-red-600 bg-red-50 rounded hover:bg-red-100 transition-colors border border-red-100"
+                      >
+                        <Trash2 size={14} /> Delete
+                      </button>
                     </div>
                   </div>
                 );
@@ -366,8 +345,8 @@ export default function ConnectionsTable() {
         )}
 
         {/* PAGINATION FOOTER */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-white">
-          <div className="flex items-center gap-4">
+        <PaginationContainer>
+          <PaginationFlexRow>
             <PaginationInfo
               currentCount={connections.length}
               totalCount={totalRecords}
@@ -380,9 +359,9 @@ export default function ConnectionsTable() {
                 table.setPageIndex(0);
               }}
             />
-          </div>
+          </PaginationFlexRow>
 
-          <div className="flex items-center gap-2">
+          <PaginationFlexRow>
             <PaginationButton
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
@@ -415,32 +394,9 @@ export default function ConnectionsTable() {
             >
               <ChevronsRight className="w-4 h-4" />
             </PaginationButton>
-          </div>
-        </div>
+          </PaginationFlexRow>
+        </PaginationContainer>
       </TableContainer>
     </div>
   );
 }
-
-// <div className="md:hidden divide-y divide-gray-100">
-//   {table.getRowModel().rows.map((row) => {
-//     const conn = row.original;
-//     return (
-//       <div key={row.id} className="p-4 flex flex-col gap-3">
-//         <div className="flex justify-between items-start">
-//           <div>
-//             <h3 className="text-sm font-bold text-gray-900">
-//               Meter: {conn.meterNumber}
-//             </h3>
-//             <p className="text-xs text-gray-500">
-//               {conn.consumer
-//                 ? `${conn.consumer.firstName} ${conn.consumer.lastName}`
-//                 : "No Consumer"}
-//             </p>
-//           </div>
-//           <StatusBadge status={conn.status} />
-//         </div>
-//       </div>
-//     );
-//   })}
-// </div>;

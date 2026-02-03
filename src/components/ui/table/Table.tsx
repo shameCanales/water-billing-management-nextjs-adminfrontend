@@ -8,7 +8,7 @@ const TableContainer = React.forwardRef<
   <div
     ref={ref}
     // ✅ No overflow-hidden here! This allows dropdowns/popovers to escape the container.
-    className={`bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col ${className}`}
+    className={`bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden min-h-[400px] ${className}`}
     {...props}
   />
 ));
