@@ -24,19 +24,19 @@ export interface BillConnection {
 }
 
 export interface Bill {
-  _id: string;
+  _id: string; //
   connection: BillConnection;
   monthOf: string;
   dueDate: string;
   meterReading: number;
-  chargePerCubicMeter: number;
-  consumedUnits: number;
-  amount: number;
+  chargePerCubicMeter: number; //
+  consumedUnits: number; //
+  amount: number; //
   status: "paid" | "unpaid" | "overdue";
-  paidAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  paidAt: string | null; //
+  createdAt: string; //
+  updatedAt: string; //
+  __v: number; //
 }
 
 export interface PaginatedBillResult {
@@ -52,3 +52,26 @@ export interface BillQueryParams {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
+
+// export interface CreateBillData {
+//   connection: string;
+//   monthOf: string;
+//   dueDate: string;
+//   meterReading: number;
+//   status: "paid" | "unpaid" | "overdue";
+// }
+
+export type CreateBillData = Omit<
+  Bill,
+  | "_id"
+  | "connection" // Add this to omit
+  | "chargePerCubicMeter"
+  | "consumedUnits"
+  | "amount"
+  | "paidAt"
+  | "createdAt"
+  | "updatedAt"
+  | "__v"
+> & {
+  connection: string; // Override with string type
+};

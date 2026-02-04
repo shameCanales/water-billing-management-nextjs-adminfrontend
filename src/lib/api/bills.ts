@@ -1,7 +1,8 @@
 import { api } from "./api";
 import { APIResponse } from "@/types/shared";
-import { BillQueryParams } from "@/types/bills";
+import { Bill, BillQueryParams } from "@/types/bills";
 import { PaginatedBillResult } from "@/types/bills";
+import { CreateBillData } from "@/types/bills";
 
 export const getAllBills = async (
   params: BillQueryParams = {},
@@ -13,4 +14,12 @@ export const getAllBills = async (
   });
 
   return response.data.data;
+};
+
+export const addBill = async (
+  data: CreateBillData,
+): Promise<APIResponse<Bill>> => {
+  const response = await api.post("/bills", data);
+
+  return response.data;
 };

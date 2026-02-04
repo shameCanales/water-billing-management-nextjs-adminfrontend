@@ -9,6 +9,9 @@ interface InitialUiState {
   editConnectionModalIsOpen: boolean;
   deleteConnectionModalIsOpen: boolean;
   addConnectionModalIsOpen: boolean;
+  addBillModalIsOpen: boolean;
+  editBillModalIsOpen: boolean;
+  deleteBillModalIsOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
@@ -24,6 +27,11 @@ const initialUiState: InitialUiState = {
   addConnectionModalIsOpen: false,
   editConnectionModalIsOpen: false,
   deleteConnectionModalIsOpen: false,
+
+  //bill modals
+  addBillModalIsOpen: false,
+  editBillModalIsOpen: false,
+  deleteBillModalIsOpen: false,
 };
 
 export const uiSlice = createSlice({
@@ -83,6 +91,14 @@ export const uiSlice = createSlice({
     },
     closeAddConnectionModal: (state) => {
       state.addConnectionModalIsOpen = false;
+    },
+
+    // bill Modals
+    openAddBillModal: (state) => {
+      state.addBillModalIsOpen = true;
+    },
+    closeAddBillModal: (state) => {
+      state.addBillModalIsOpen = false;
     },
   },
 });

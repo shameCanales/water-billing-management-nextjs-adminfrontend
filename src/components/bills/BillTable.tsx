@@ -28,10 +28,15 @@ import PaginationInfo from "../ui/pagination/PaginationInfo";
 import PaginationPageCounter from "../ui/pagination/PaginationCounter";
 import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect";
 import { TableContainer } from "../ui/table/Table";
+import AddBillModal from "./AddBillModal";
+import { uiActions } from "@/lib/store/uiSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store/store";
 
 type BillStatusFilterType = "paid" | "unpaid" | "overdue" | "all";
 
 export default function BillsTable() {
+  const dispatch = useDispatch<AppDispatch>();
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<BillStatusFilterType>("all");
@@ -92,11 +97,13 @@ export default function BillsTable() {
 
   return (
     <div className="space-y-6 font-sans mt-8">
+      <AddBillModal />
+
       <TableToolbar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         searchPlaceholder="Search by meter number or consumer..."
-        onAddClick={() => console.log("add")}
+        onAddClick={() => dispatch(uiActions.openAddBillModal())}
         addButtonLabel="Create Bill"
       >
         <div className="relative">

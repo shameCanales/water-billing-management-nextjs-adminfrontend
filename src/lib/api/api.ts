@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import type { LoginCredentials, LoginResponse } from "@/types/auth";
-import type { APIResponse, UserProfile } from "@/types/user";
+import type { UserProfile } from "@/types/user";
+import { APIResponse } from "@/types/shared";
 
 // =================================================================
 // 1. AXIOS INSTANCE
