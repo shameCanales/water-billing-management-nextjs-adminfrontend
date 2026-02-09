@@ -12,6 +12,7 @@ interface InitialUiState {
   addBillModalIsOpen: boolean;
   editBillModalIsOpen: boolean;
   deleteBillModalIsOpen: boolean;
+  viewBillDetailsModalIsOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
@@ -32,6 +33,7 @@ const initialUiState: InitialUiState = {
   addBillModalIsOpen: false,
   editBillModalIsOpen: false,
   deleteBillModalIsOpen: false,
+  viewBillDetailsModalIsOpen: false,
 };
 
 export const uiSlice = createSlice({
@@ -100,6 +102,12 @@ export const uiSlice = createSlice({
     closeAddBillModal: (state) => {
       state.addBillModalIsOpen = false;
     },
+    openViewBillDetailsModal: (state) => {
+      state.viewBillDetailsModalIsOpen = true;
+    },
+    closeViewBillDetailsModal: (state) => {
+      state.viewBillDetailsModalIsOpen = false;
+    }
   },
 });
 

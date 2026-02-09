@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import {
   useReactTable,
   getCoreRowModel,
@@ -29,14 +30,22 @@ import PaginationPageCounter from "../ui/pagination/PaginationCounter";
 import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect";
 import { TableContainer } from "../ui/table/Table";
 import AddBillModal from "./AddBillModal";
+import ViewBillDetailsModal from "./ViewCompleteBillDetails";
 import { uiActions } from "@/lib/store/uiSlice";
-import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store/store";
 
 type BillStatusFilterType = "paid" | "unpaid" | "overdue" | "all";
 
 export default function BillsTable() {
   const dispatch = useDispatch<AppDispatch>();
+
+  // Selected bill state (similar to ConnectionsTable pattern)
+  const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
+
+  useEffect(() => {
+    console.log("Selected Bill:", selectedBill);
+  }, [selectedBill]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<BillStatusFilterType>("all");
@@ -65,9 +74,14 @@ export default function BillsTable() {
   const totalPages = data?.pagination.totalPages || 0;
   const totalRecords = data?.pagination.total || 0;
 
-  const handleView = useCallback((bill: Bill) => {
-    console.log("Viewing Bill:", bill._id);
-  }, []);
+  // Handler - follows ConnectionsTable pattern
+  const handleView = useCallback(
+    (bill: Bill) => {
+      setSelectedBill(bill);
+      dispatch(uiActions.openViewBillDetailsModal());
+    },
+    [dispatch],
+  );
 
   const columns = useMemo(
     () => getBillColumns(openMenuId, setOpenMenuId, handleView),
@@ -97,7 +111,9 @@ export default function BillsTable() {
 
   return (
     <div className="space-y-6 font-sans mt-8">
+      {/* Modals - follows ConnectionsTable pattern */}
       <AddBillModal />
+      <ViewBillDetailsModal billToView={selectedBill} />
 
       <TableToolbar
         searchTerm={searchTerm}
