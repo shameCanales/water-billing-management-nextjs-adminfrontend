@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ReduxToolkitProvider from "@/lib/providers/ReduxToolkitProvider";
 import TanstackProvider from "@/lib/providers/TanstackProvider";
+import AuthProvider from "@/components/Providers/AuthProvider";
 import { outfit } from "@/lib/fonts";
 import { ToastProvider } from "@/components/Providers/ToastProvider";
 
@@ -20,7 +21,7 @@ export default function RootLayout({
       <ReduxToolkitProvider>
         <TanstackProvider>
           <body className={`${outfit.className} antialiased`}>
-            {children}
+            <AuthProvider>{children}</AuthProvider>
             <ToastProvider />
           </body>
         </TanstackProvider>

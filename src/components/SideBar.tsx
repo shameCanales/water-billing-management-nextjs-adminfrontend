@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "@/lib/store/uiSlice";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 const links = [
   {
@@ -47,8 +47,8 @@ const links = [
     iconName: "stats.png",
   },
   {
-    route: "/processors",
-    label: "Processors",
+    route: "/staffs",
+    label: "Staffs",
     iconName: "user-shield.png",
   },
   {
@@ -58,18 +58,35 @@ const links = [
   },
 ];
 
+const MANAGER_ONLY_ROUTES = ["/settings", "/staffs"];
+
 export default function SideBar() {
   const dispatch = useDispatch<AppDispatch>();
   const { mutate: logout, isPending: loggingOut } = useLogout();
   const width = useWindowWidth();
 
   const mobileSidebarIsOpen = useSelector(
-    (state: RootState) => state.ui.mobileSidebarIsOpen
+    (state: RootState) => state.ui.mobileSidebarIsOpen,
   );
 
   const sidebarIsExpanded = useSelector(
-    (state: RootState) => state.ui.isSidebarExpanded
+    (state: RootState) => state.ui.isSidebarExpanded,
   );
+
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isManager = user?.role === "manager";
+
+  const visibleLinks = useMemo(() => {
+    return links.filter((link) => {
+      // If the link is restricted...
+      if (MANAGER_ONLY_ROUTES.includes(link.route)) {
+        // ...only show it if the user is a manager
+        return isManager;
+      }
+      // Otherwise, show it to everyone (Staff & Manager)
+      return true;
+    });
+  }, [isManager]);
 
   useEffect(() => {
     if (width <= 1280 && !sidebarIsExpanded) {
@@ -140,7 +157,7 @@ export default function SideBar() {
       <UserProfile />
 
       <ul className="grid py-4">
-        {links.map((link) => (
+        {visibleLinks.map((link) => (
           <li key={link.route}>
             <SideBarLink
               route={link.route}

@@ -34,7 +34,7 @@ export default function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "admin6@test.com", // Kept your default for easy testing
+      email: "admin@test.com", // Kept your default for easy testing
       password: "@Password123",
     },
   });
@@ -49,10 +49,7 @@ export default function LoginPage() {
           });
 
           dispatch(
-            authActions.setCredentials({
-              user: responseData.user,
-              token: responseData.accessToken,
-            })
+            authActions.setCredentials(responseData.user)
           );
 
           router.push("/dashboard");

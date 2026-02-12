@@ -11,7 +11,7 @@ export default function FormLabel({
   return (
     <label
       // Merge default styles with any custom className passed in
-      className={`block text-sm font-medium text-slate-900 ${className}`}
+      className={`block text-sm mb-2 font-medium text-slate-900 ${className}`}
       {...props} // Spreads htmlFor and any other standard props automatically
     >
       {children}
