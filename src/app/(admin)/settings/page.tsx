@@ -1,4 +1,4 @@
-import BillingConfiguration from "@/components/BillingConfiguration";
+import BillingConfiguration from "@/components/settings/BillingConfiguration";
 
 export default function Settings() {
   return (

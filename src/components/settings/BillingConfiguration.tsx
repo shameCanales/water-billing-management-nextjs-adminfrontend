@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { DollarSign, Save } from "lucide-react";
+import ConfirmChangeChargeModal from "./ConfirmChangeChargeModal";
 
 // Hooks
-
 import { useGetChargePerCubicMeter } from "@/hooks/settings.ts/useGetChargePerCubicMeter";
 import { useUpdateChargePerCubicMeter } from "@/hooks/settings.ts/useUpdateChargePerCubicMeter";
 
@@ -29,13 +29,15 @@ const billingSchema = z.object({
 type BillingFormValues = z.infer<typeof billingSchema>;
 
 export default function BillingConfiguration() {
+  // Local state for the modal and holding the pending form submission
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingAmount, setPendingAmount] = useState<number | null>(null);
+
   // 1. Fetch Data
-  const { data: currentRate, isLoading: isLoadingRate } =
-    useGetChargePerCubicMeter();
+  const { data: currentRate, isLoading: isLoadingRate } = useGetChargePerCubicMeter();
 
   // 2. Mutation Hook
-  const { mutate: updateRate, isPending: isUpdating } =
-    useUpdateChargePerCubicMeter();
+  const { mutate: updateRate, isPending: isUpdating } = useUpdateChargePerCubicMeter();
 
   const {
     register,
@@ -54,8 +56,29 @@ export default function BillingConfiguration() {
     }
   }, [currentRate, setValue]);
 
+  // 4. Form Submit Handler - Open modal instead of calling API directly
   const onSubmit = (data: BillingFormValues) => {
-    updateRate(data.amount);
+    // Check if the value actually changed to prevent unnecessary API calls
+    if (data.amount === currentRate) return; 
+    
+    setPendingAmount(data.amount);
+    setIsModalOpen(true);
+  };
+
+  // 5. Modal Confirm Handler - Call API and close modal on success
+  const handleConfirmUpdate = () => {
+    if (pendingAmount === null) return;
+
+    updateRate(pendingAmount, {
+      onSuccess: () => {
+        setIsModalOpen(false);
+        setPendingAmount(null);
+      },
+      onError: (error) => {
+        console.error("Failed to update rate:", error);
+        // Optionally handle error state here (e.g., show toast notification)
+      }
+    });
   };
 
   return (
@@ -137,6 +160,16 @@ export default function BillingConfiguration() {
           </div>
         </div>
       </form>
+
+      {/* --- Confirmation Modal --- */}
+      <ConfirmChangeChargeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        newAmount={pendingAmount}
+        currentAmount={currentRate}
+        isUpdating={isUpdating}
+      />
     </div>
   );
 }

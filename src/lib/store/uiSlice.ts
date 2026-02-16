@@ -107,7 +107,7 @@ export const uiSlice = createSlice({
     },
     closeViewBillDetailsModal: (state) => {
       state.viewBillDetailsModalIsOpen = false;
-    }
+    },
   },
 });
 
