@@ -8,8 +8,8 @@ import { DollarSign, Save } from "lucide-react";
 import ConfirmChangeChargeModal from "./ConfirmChangeChargeModal";
 
 // Hooks
-import { useGetChargePerCubicMeter } from "@/hooks/settings.ts/useGetChargePerCubicMeter";
-import { useUpdateChargePerCubicMeter } from "@/hooks/settings.ts/useUpdateChargePerCubicMeter";
+import { useUpdateSetting } from "@/hooks/settings.ts/useUpdateSetting";
+import { useGetSettings } from "@/hooks/settings.ts/useGetSettings";
 
 // UI Components
 import FormInput from "@/components/ui/form/FormInput";
@@ -34,10 +34,10 @@ export default function BillingConfiguration() {
   const [pendingAmount, setPendingAmount] = useState<number | null>(null);
 
   // 1. Fetch Data
-  const { data: currentRate, isLoading: isLoadingRate } = useGetChargePerCubicMeter();
+  const { data: settings, isLoading: isLoadingSettings } = useGetSettings();
 
   // 2. Mutation Hook
-  const { mutate: updateRate, isPending: isUpdating } = useUpdateChargePerCubicMeter();
+  const { mutate: updateSetting, isPending: isUpdating } = useUpdateSetting();
 
   const {
     register,
@@ -51,16 +51,16 @@ export default function BillingConfiguration() {
 
   // 3. Sync API data to Form when it loads
   useEffect(() => {
-    if (currentRate !== undefined) {
-      setValue("amount", currentRate);
+    if (settings?.chargePerCubicMeter !== undefined) {
+      setValue("amount", settings.chargePerCubicMeter);
     }
-  }, [currentRate, setValue]);
+  }, [settings?.chargePerCubicMeter, setValue]);
 
   // 4. Form Submit Handler - Open modal instead of calling API directly
   const onSubmit = (data: BillingFormValues) => {
     // Check if the value actually changed to prevent unnecessary API calls
-    if (data.amount === currentRate) return; 
-    
+    if (data.amount === settings?.chargePerCubicMeter) return;
+
     setPendingAmount(data.amount);
     setIsModalOpen(true);
   };
@@ -69,16 +69,19 @@ export default function BillingConfiguration() {
   const handleConfirmUpdate = () => {
     if (pendingAmount === null) return;
 
-    updateRate(pendingAmount, {
-      onSuccess: () => {
-        setIsModalOpen(false);
-        setPendingAmount(null);
+    updateSetting(
+      { key: "chargePerCubicMeter", value: pendingAmount },
+      {
+        onSuccess: () => {
+          setIsModalOpen(false);
+          setPendingAmount(null);
+        },
+        onError: (error) => {
+          console.error("Failed to update rate:", error);
+          // Optionally handle error state here (e.g., show toast notification)
+        },
       },
-      onError: (error) => {
-        console.error("Failed to update rate:", error);
-        // Optionally handle error state here (e.g., show toast notification)
-      }
-    });
+    );
   };
 
   return (
@@ -112,7 +115,7 @@ export default function BillingConfiguration() {
                 type="number"
                 step="0.01"
                 placeholder="0.00"
-                disabled={isLoadingRate}
+                disabled={isLoadingSettings}
                 {...register("amount")}
               />
               {errors.amount && (
@@ -123,7 +126,7 @@ export default function BillingConfiguration() {
             <Button
               type="submit"
               isLoading={isUpdating}
-              disabled={isLoadingRate}
+              disabled={isLoadingSettings}
               className="w-full sm:w-auto"
             >
               <Save className="mr-2 w-4 h-4" />
@@ -147,7 +150,7 @@ export default function BillingConfiguration() {
             <div className="flex justify-between items-center border-b border-blue-100 pb-2">
               <span className="text-gray-500">Default Rate:</span>
               <span className="font-mono font-bold text-gray-900 text-base">
-                ₱ {currentRate?.toFixed(2) ?? "0.00"} per m³
+                ₱ {settings?.chargePerCubicMeter.toFixed(2) ?? "0.00"} per m³
               </span>
             </div>
 
@@ -167,7 +170,7 @@ export default function BillingConfiguration() {
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmUpdate}
         newAmount={pendingAmount}
-        currentAmount={currentRate}
+        currentAmount={settings?.chargePerCubicMeter}
         isUpdating={isUpdating}
       />
     </div>
