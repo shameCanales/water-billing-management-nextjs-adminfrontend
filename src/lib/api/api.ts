@@ -8,7 +8,7 @@ import { APIResponse } from "@/types/shared";
 // 1. AXIOS INSTANCE
 // =================================================================
 export const api = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -37,7 +37,7 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // =================================================================
@@ -61,7 +61,7 @@ api.interceptors.response.use(
         const { data } = await axios.post<LoginResponse>(
           "http://localhost:3001/api/auth/admin/refresh",
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         const newAccessToken = data.accessToken;
@@ -94,7 +94,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 // =================================================================
@@ -102,11 +102,11 @@ api.interceptors.response.use(
 // =================================================================
 
 export const loginUser = async (
-  credentials: LoginCredentials
+  credentials: LoginCredentials,
 ): Promise<LoginResponse> => {
   const response = await api.post<LoginResponse>(
     "/auth/admin/login",
-    credentials
+    credentials,
   );
 
   // Set cookie immediately upon login
