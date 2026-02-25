@@ -16,7 +16,7 @@ export interface Connection {
   address: string;
   connectionDate: string;
   type: "residential" | "commercial";
-  status: "active" | "disconnected";
+  status: "connected" | "disconnected";
   createdAt: string;
   updatedAt: string;
 }
@@ -30,7 +30,7 @@ export interface ConnectionQueryParams {
   page?: number;
   limit?: number;
   search?: string;
-  status?: "active" | "disconnected" | "all" | "";
+  status?: "connected" | "disconnected" | "all" | "";
   type?: "residential" | "commercial" | "all" | "";
   sortBy?: string;
   sortOrder?: "asc" | "desc";
@@ -42,7 +42,7 @@ export interface CreateConnectionData {
   address: string;
   connectionDate: string;
   type: "residential" | "commercial";
-  status: "active" | "disconnected";
+  status: "connected" | "disconnected";
 }
 
 export interface EditConnectionData {
@@ -50,5 +50,5 @@ export interface EditConnectionData {
   address?: string;
   connectionDate?: string;
   type?: "residential" | "commercial";
-  status?: "active" | "disconnected";
+  status?: "connected" | "disconnected";
 }

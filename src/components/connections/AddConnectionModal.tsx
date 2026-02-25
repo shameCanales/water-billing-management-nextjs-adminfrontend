@@ -39,7 +39,7 @@ const connectionSchema = z.object({
 
   type: z.enum(["residential", "commercial"]),
 
-  status: z.enum(["active", "disconnected"]),
+  status: z.enum(["connected", "disconnected"]),
 });
 
 type ConnectionFormValues = z.infer<typeof connectionSchema>;
@@ -47,7 +47,7 @@ type ConnectionFormValues = z.infer<typeof connectionSchema>;
 export default function AddConnectionModal() {
   const dispatch = useDispatch();
   const isOpen = useSelector(
-    (state: RootState) => state.ui.addConnectionModalIsOpen
+    (state: RootState) => state.ui.addConnectionModalIsOpen,
   );
 
   const { data: consumerData, isLoading: isLoadingConsumers } =
@@ -80,7 +80,7 @@ export default function AddConnectionModal() {
     defaultValues: {
       connectionDate: today,
       type: "residential",
-      status: "active",
+      status: "connected",
     },
   });
 
@@ -96,7 +96,7 @@ export default function AddConnectionModal() {
       },
       {
         onSuccess: () => handleClose(),
-      }
+      },
     );
   };
 
@@ -197,8 +197,12 @@ export default function AddConnectionModal() {
         {/* Row 4: Status */}
         <div>
           <FormLabel htmlFor="status">Status</FormLabel>
-          <FormSelect id="status" {...register("status")} defaultValue="active">
-            <option value="active">Active</option>
+          <FormSelect
+            id="status"
+            {...register("status")}
+            defaultValue="connected"
+          >
+            <option value="connected">Connected</option>
             <option value="disconnected">Disconnected</option>
           </FormSelect>
         </div>

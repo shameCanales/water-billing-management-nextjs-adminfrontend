@@ -39,7 +39,7 @@ import {
 } from "../ui/pagination/PaginationContainer";
 import { TableContainer } from "../ui/table/Table";
 
-type StatusFilterType = "active" | "disconnected" | "all" | "";
+type StatusFilterType = "connected" | "disconnected" | "all" | "";
 type TypeFilterType = "residential" | "commercial" | "all" | "";
 
 export default function ConnectionsTable() {
@@ -172,7 +172,7 @@ export default function ConnectionsTable() {
             className="appearance-none w-full sm:w-40 pl-10 pr-8 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-gray-600"
           >
             <option value="">All Statuses</option>
-            <option value="active">Active</option>
+            <option value="connected">Connected</option>
             <option value="disconnected">Disconnected</option>
           </select>
         </div>

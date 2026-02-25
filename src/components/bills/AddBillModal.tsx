@@ -42,7 +42,7 @@ export default function AddBillModal() {
   // Fetch connections to populate the dropdown
   const { data: connectionData, isLoading: isLoadingConnections } =
     useGetAllConnections({
-      status: "active",
+      status: "connected",
       limit: 100,
     });
 

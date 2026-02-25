@@ -40,7 +40,7 @@ const editConnectionSchema = z.object({
     }),
 
   type: z.enum(["residential", "commercial"]),
-  status: z.enum(["active", "disconnected"]),
+  status: z.enum(["connected", "disconnected"]),
 });
 
 // Infer the type for use in onSubmit
@@ -75,7 +75,7 @@ export default function EditConnectionModal({
       address: "",
       connectionDate: "",
       type: "residential" as const,
-      status: "active" as const,
+      status: "connected" as const,
     },
   });
 
@@ -210,7 +210,7 @@ export default function EditConnectionModal({
           <div>
             <FormLabel htmlFor="status">Status</FormLabel>
             <FormSelect id="status" {...register("status")}>
-              <option value="active">Active</option>
+              <option value="connected">Connected</option>
               <option value="disconnected">Disconnected</option>
             </FormSelect>
             {errors.status && (
