@@ -50,5 +50,4 @@ export interface EditConnectionData {
   address?: string;
   connectionDate?: string;
   type?: "residential" | "commercial";
-  status?: "connected" | "disconnected";
 }

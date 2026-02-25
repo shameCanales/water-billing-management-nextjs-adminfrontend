@@ -10,6 +10,7 @@ import {
   getCoreRowModel,
 } from "@tanstack/react-table";
 import { useGetAllConnections } from "@/hooks/connections/useGetAllConnections";
+import { useUpdateConnectionStatus } from "@/hooks/connections/useUpdateConnectionStatus";
 import { uiActions } from "@/lib/store/uiSlice";
 import { StatusBadge } from "../ui/StatusBadge";
 
@@ -89,6 +90,18 @@ export default function ConnectionsTable() {
     [dispatch],
   );
 
+  const {
+    mutate: updateConnectionStatus,
+    isPending: updatingConnectionStatus,
+  } = useUpdateConnectionStatus();
+
+  const handleUpdateConnectionStatus = useCallback(
+    (id: string, status: "connected" | "disconnected") => {
+      updateConnectionStatus({ id, status });
+    },
+    [updateConnectionStatus],
+  );
+
   const handleDeleteClick = useCallback(
     (connection: Connection) => {
       setSelectedConnection(connection);
@@ -105,11 +118,17 @@ export default function ConnectionsTable() {
         setOpenMenuRowId,
         handleEditClick,
         handleDeleteClick,
+        handleUpdateConnectionStatus,
       );
 
       return cols;
     },
-    [openMenuRowId, handleEditClick, handleDeleteClick],
+    [
+      openMenuRowId,
+      handleEditClick,
+      handleDeleteClick,
+      handleUpdateConnectionStatus,
+    ],
   );
 
   const table = useReactTable({

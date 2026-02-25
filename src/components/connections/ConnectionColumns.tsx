@@ -3,19 +3,20 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Connection } from "@/types/connections";
 import { ActionMenu, ActionMenuItem } from "@/components/ActionMenu";
-// import { ActionMenu, ActionMenuItem } from "../ActionMenu";
 
-import { Eye, Edit, Trash2 } from "lucide-react";
+import { Eye, Edit, Trash2, Unplug, PlugZap } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 
 export const getConnectionColumns = (
   openMenuId: string | null,
   setOpenMenuId: (id: string | null) => void,
   onEdit: (connection: Connection) => void,
-  onDelete: (connection: Connection) => void, // also check here the problem
+  onDelete: (connection: Connection) => void,
+  onUpdateConnectionStatus: (
+    id: string,
+    status: "connected" | "disconnected",
+  ) => void,
 ): ColumnDef<Connection>[] => {
-
-
   return [
     {
       accessorKey: "meterNumber",
@@ -142,6 +143,30 @@ export const getConnectionColumns = (
               }}
             >
               <Edit size={14} /> Edit Connection
+            </ActionMenuItem>
+
+            <ActionMenuItem
+              className="text-gray-700"
+              onClick={() => {
+                const status =
+                  row.original.status === "connected"
+                    ? "disconnected"
+                    : "connected";
+                onUpdateConnectionStatus(row.original._id, status);
+                setOpenMenuId(null);
+              }}
+            >
+              {row.original.status === "connected" ? (
+                <>
+                  <Unplug size={14} />
+                  <p>Disconnect</p>
+                </>
+              ) : (
+                <>
+                  <PlugZap size={14} />
+                  <p>Connect</p>
+                </>
+              )}
             </ActionMenuItem>
 
             <ActionMenuItem

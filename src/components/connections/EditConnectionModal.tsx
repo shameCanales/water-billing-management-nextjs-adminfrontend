@@ -195,7 +195,8 @@ export default function EditConnectionModal({
         </div>
 
         {/* Type & Status */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"> */}
+        <div className="grid ">
           <div>
             <FormLabel htmlFor="type">Type</FormLabel>
             <FormSelect id="type" {...register("type")}>
@@ -207,7 +208,7 @@ export default function EditConnectionModal({
             )}
           </div>
 
-          <div>
+          {/* <div>
             <FormLabel htmlFor="status">Status</FormLabel>
             <FormSelect id="status" {...register("status")}>
               <option value="connected">Connected</option>
@@ -216,7 +217,7 @@ export default function EditConnectionModal({
             {errors.status && (
               <FormValidationErrorMsg error={errors.status.message as string} />
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* Footer Actions */}

@@ -46,3 +46,11 @@ export const editConnection = async (
   const response = await api.patch(`/connections/${id}`, data);
   return response.data;
 };
+
+export const updateConnectionStatus = async (
+  id: string,
+  status: "connected" | "disconnected",
+): Promise<APIResponse<Connection>> => {
+  const response = await api.patch(`/connections/${id}/status`, { status });
+  return response.data;
+};

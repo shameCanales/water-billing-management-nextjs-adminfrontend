@@ -60,6 +60,8 @@ export interface CreateConsumerResponse {
     __v: number;
   };
 }
+
+//redundant types
 export interface UpdateConsumerResponse {
   success: boolean;
   message: string;

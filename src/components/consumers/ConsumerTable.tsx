@@ -400,8 +400,6 @@ export default function ConsumerTable() {
             </PaginationButton>
           </PaginationFlexRow>
         </PaginationContainer>
-
-      
       </TableContainer>
     </div>
   );
