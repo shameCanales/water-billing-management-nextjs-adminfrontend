@@ -4,9 +4,7 @@ import {
   ConsumerQueryParams,
   PaginatedConsumerResult,
   CreateConsumerData,
-  CreateConsumerResponse,
   EditConsumerData,
-  UpdateConsumerResponse,
   Consumer,
 } from "@/types/consumers";
 
@@ -26,7 +24,7 @@ export const getAllConsumers = async (
 
 export const addConsumer = async (
   data: CreateConsumerData,
-): Promise<CreateConsumerResponse> => {
+): Promise<APIResponse<Consumer>> => {
   const response = await api.post("/consumers", data);
   return response.data;
 };
@@ -52,7 +50,7 @@ export const deleteConsumer = async (
 export const updateConsumerStatus = async (
   id: string,
   status: "active" | "suspended",
-): Promise<UpdateConsumerResponse> => {
+): Promise<APIResponse<Consumer>> => {
   const response = await api.patch(`/consumers/${id}/status`, { status });
   return response.data;
 };

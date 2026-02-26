@@ -1,15 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addConsumer } from "@/lib/api/consumers";
-import type {
-  CreateConsumerData,
-  CreateConsumerResponse,
-} from "@/types/consumers";
+import type { Consumer, CreateConsumerData } from "@/types/consumers";
 import { notify } from "@/lib/utils/toast";
+import { APIResponse } from "@/types/shared";
 
 export const useAddConsumer = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<CreateConsumerResponse, Error, CreateConsumerData>({
+  return useMutation<APIResponse<Consumer>, Error, CreateConsumerData>({
     mutationFn: (data) => {
       const promise = addConsumer(data);
 
