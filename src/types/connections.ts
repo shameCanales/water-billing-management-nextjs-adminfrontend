@@ -1,5 +1,8 @@
 import { PaginationMeta } from "./pagination";
 
+export type ConnectionType = "residential" | "commercial";
+export type ConnectionStatus = "connected" | "disconnected";
+
 export interface ConnectionConsumer {
   _id: string;
   firstName: string;
@@ -15,8 +18,8 @@ export interface Connection {
   meterNumber: number;
   address: string;
   connectionDate: string;
-  type: "residential" | "commercial";
-  status: "connected" | "disconnected";
+  type: ConnectionType;
+  status: ConnectionStatus;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,24 +33,19 @@ export interface ConnectionQueryParams {
   page?: number;
   limit?: number;
   search?: string;
-  status?: "connected" | "disconnected" | "all" | "";
-  type?: "residential" | "commercial" | "all" | "";
+  status?: ConnectionStatus | "all" | "";
+  type?: ConnectionType | "all" | "";
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
 
-export interface CreateConnectionData {
+export interface CreateConnectionData extends Pick<
+  Connection,
+  "meterNumber" | "address" | "connectionDate" | "type" | "status"
+> {
   consumer: string;
-  meterNumber: number;
-  address: string;
-  connectionDate: string;
-  type: "residential" | "commercial";
-  status: "connected" | "disconnected";
 }
 
-export interface EditConnectionData {
-  meterNumber?: number;
-  address?: string;
-  connectionDate?: string;
-  type?: "residential" | "commercial";
-}
+export interface EditConnectionData extends Partial<
+  Omit<CreateConnectionData, "consumer" | "status">
+> {}

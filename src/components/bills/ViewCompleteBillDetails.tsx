@@ -83,7 +83,7 @@ export default function ViewBillDetailsModal({
                 label="Status"
                 value={billToView.connection.status}
                 className={
-                  billToView.connection.status === "active"
+                  billToView.connection.status === "connected"
                     ? "text-green-600 font-medium capitalize"
                     : "text-red-600 font-medium capitalize"
                 }

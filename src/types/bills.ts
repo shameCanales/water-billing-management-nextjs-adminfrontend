@@ -1,5 +1,9 @@
 import { PaginationMeta } from "./pagination";
 
+export type BillStatus = "paid" | "unpaid" | "overdue";
+export type ConnectionType = "residential" | "commercial";
+export type ConnectionStatus = "connected" | "disconnected";
+
 export interface BillConsumer {
   _id: string;
   firstName: string;
@@ -16,27 +20,27 @@ export interface BillConnection {
   meterNumber: number;
   address: string;
   connectionDate: string;
-  type: "residential" | "commercial";
-  status: "active" | "disconnected";
+  type: ConnectionType;
+  status: ConnectionStatus;
   createdAt: string;
   updatedAt: string;
   __v: number;
 }
 
 export interface Bill {
-  _id: string; //
+  _id: string;
   connection: BillConnection;
   monthOf: string;
   dueDate: string;
   meterReading: number;
-  chargePerCubicMeter: number; //
-  consumedUnits: number; //
-  amount: number; //
-  status: "paid" | "unpaid" | "overdue";
-  paidAt: string | null; //
-  createdAt: string; //
-  updatedAt: string; //
-  __v: number; //
+  chargePerCubicMeter: number;
+  consumedUnits: number;
+  amount: number;
+  status: BillStatus;
+  paidAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export interface PaginatedBillResult {
@@ -53,25 +57,13 @@ export interface BillQueryParams {
   sortOrder?: "asc" | "desc";
 }
 
-// export interface CreateBillData {
-//   connection: string;
-//   monthOf: string;
-//   dueDate: string;
-//   meterReading: number;
-//   status: "paid" | "unpaid" | "overdue";
-// }
-
-export type CreateBillData = Omit<
+export interface CreateBillData extends Pick<
   Bill,
-  | "_id"
-  | "connection" // Add this to omit
-  | "chargePerCubicMeter"
-  | "consumedUnits"
-  | "amount"
-  | "paidAt"
-  | "createdAt"
-  | "updatedAt"
-  | "__v"
-> & {
-  connection: string; // Override with string type
-};
+  "monthOf" | "dueDate" | "meterReading" | "status"
+> {
+  connection: string;
+}
+
+export interface EditBillData extends Partial<
+  Omit<CreateBillData, "connection">
+> {}
