@@ -73,27 +73,9 @@ export const getConnectionColumns = (
     {
       accessorKey: "type",
       header: "Type",
-      cell: ({ getValue }) => {
-        const type = getValue() as string;
-
-        // Matching the styling from your mobile view
-        const styles = {
-          residential: "bg-blue-50 text-blue-700 border-blue-200",
-          commercial: "bg-purple-50 text-purple-700 border-purple-200",
-        };
-
-        const style =
-          styles[type as keyof typeof styles] ||
-          "bg-gray-50 text-gray-600 border-gray-200";
-
-        return (
-          <span
-            className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${style} uppercase tracking-wide`}
-          >
-            {type}
-          </span>
-        );
-      },
+      cell: ({ getValue }) => (
+        <StatusBadge status={getValue() as string} capsLock={true} />
+      ),
     },
     {
       accessorKey: "connectionDate",

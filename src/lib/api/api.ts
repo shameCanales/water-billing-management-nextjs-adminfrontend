@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import type { LoginCredentials, LoginResponse } from "@/types/auth";
-import type { UserProfile } from "@/types/user";
+import type { Processor } from "@/types/processor";
 import { APIResponse } from "@/types/shared";
 
 // =================================================================
@@ -127,6 +127,6 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 export const getProfileData = async () => {
-  const response = await api.get<APIResponse<UserProfile>>("/shared/me");
+  const response = await api.get<APIResponse<Processor>>("/shared/me");
   return response.data.data;
 };

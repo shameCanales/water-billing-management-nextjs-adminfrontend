@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -39,7 +38,6 @@ type BillStatusFilterType = "paid" | "unpaid" | "overdue" | "all";
 export default function BillsTable() {
   const dispatch = useDispatch<AppDispatch>();
 
-  // Selected bill state (similar to ConnectionsTable pattern)
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
 
   useEffect(() => {
