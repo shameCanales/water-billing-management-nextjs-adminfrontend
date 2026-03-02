@@ -39,7 +39,7 @@ export const getProcessorColumns = (
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ getValue }) => <StatusBadge status={getValue() as string}  />,
+    cell: ({ getValue }) => <StatusBadge status={getValue() as string} capsLock={true} />,
   },
   {
     accessorKey: "status",

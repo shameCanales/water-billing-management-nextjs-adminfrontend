@@ -1,10 +1,7 @@
-
-
 import { PaginationMeta } from "./pagination";
 
 export type ProcessorRole = "staff" | "manager";
 export type ProcessorStatus = "active" | "restricted";
-
 
 export interface Processor {
   _id: string;
@@ -18,7 +15,6 @@ export interface Processor {
   updatedAt: string;
   __v: number;
 }
-
 
 export interface PaginatedProcessorResult {
   processors: Processor[];

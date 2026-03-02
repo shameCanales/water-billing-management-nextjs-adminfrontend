@@ -5,7 +5,7 @@ import {
   PaginatedProcessorResult,
   CreateProcessorData,
   Processor,
-  EditProcessorData
+  EditProcessorData,
 } from "@/types/processor";
 
 export const getAllProcessors = async (
@@ -17,6 +17,13 @@ export const getAllProcessors = async (
     { params, signal },
   );
   return response.data.data;
+};
+
+export const addProcessor = async (
+  data: CreateProcessorData,
+): Promise<APIResponse<Processor>> => {
+  const response = await api.post("/processors", data);
+  return response.data;
 };
 
 // // Get a single processor by ID

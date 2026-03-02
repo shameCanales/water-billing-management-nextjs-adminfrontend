@@ -30,11 +30,16 @@ import {
   PaginationFlexRow,
 } from "../ui/pagination/PaginationContainer";
 import type { ProcessorRole, ProcessorStatus } from "@/types/processor";
+import AddProcessorModal from "./AddProcessorModal";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store/store";
+import { uiActions } from "@/lib/store/uiSlice";
 
 type StatusFilterType = ProcessorStatus | "all" | "";
 type RoleFilterType = ProcessorRole | "all" | "";
 
 export default function ProcessorTable() {
+  const dispatch = useDispatch<AppDispatch>();
   // ==========================================
   // 1. STATE MANAGEMENT
   // ==========================================
@@ -111,11 +116,12 @@ export default function ProcessorTable() {
 
   return (
     <div className="space-y-6 font-sans mt-8">
+      <AddProcessorModal />
       <TableToolbar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         searchPlaceholder="Search staff by name or email..."
-        onAddClick={() => console.log("Open Add Processor Modal")} // Placeholder
+        onAddClick={() => dispatch(uiActions.openAddProcessorModal())}
         addButtonLabel="Add Processor"
       >
         <div className="flex gap-2">
