@@ -26,6 +26,18 @@ export const addProcessor = async (
   return response.data;
 };
 
+// Update processor status (active/restricted)
+export const updateProcessorStatus = async (
+  id: string,
+  status: "active" | "restricted",
+): Promise<APIResponse<Processor>> => {
+  const response = await api.patch<APIResponse<Processor>>(
+    `/processors/${id}/status`,
+    { status },
+  );
+  return response.data;
+};
+
 // // Get a single processor by ID
 // export const getProcessorById = async (
 //   id: string,
@@ -38,17 +50,6 @@ export const addProcessor = async (
 //   return response.data;
 // };
 
-// // Register a new processor (Manager only route)
-// export const addProcessor = async (
-//   data: CreateProcessorData,
-// ): Promise<APIResponse<Processor>> => {
-//   const response = await api.post<APIResponse<Processor>>(
-//     "/processors",
-//     data,
-//   );
-//   return response.data;
-// };
-
 // // Edit a processor's details
 // export const editProcessor = async (
 //   id: string,
@@ -57,18 +58,6 @@ export const addProcessor = async (
 //   const response = await api.patch<APIResponse<Processor>>(
 //     `/processors/${id}`,
 //     data,
-//   );
-//   return response.data;
-// };
-
-// // Update processor status (active/restricted)
-// export const updateProcessorStatus = async (
-//   id: string,
-//   status: "active" | "restricted",
-// ): Promise<APIResponse<Processor>> => {
-//   const response = await api.patch<APIResponse<Processor>>(
-//     `/processors/${id}/status`,
-//     { status }
 //   );
 //   return response.data;
 // };

@@ -1,5 +1,7 @@
 import { PaginationMeta } from "./pagination";
 
+export type ConsumerStatus = "active" | "suspended";
+
 export interface Consumer {
   _id: string;
   firstName: string;
@@ -9,7 +11,7 @@ export interface Consumer {
   mobileNumber: string;
   address: string;
   birthDate: string;
-  status: "active" | "suspended";
+  status: ConsumerStatus;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -24,7 +26,7 @@ export interface ConsumerQueryParams {
   page?: number;
   limit?: number;
   search?: string;
-  status?: "active" | "suspended" | "all" | "";
+  status?: ConsumerStatus | "all" | "";
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
@@ -39,7 +41,7 @@ export interface CreateConsumerData {
   mobileNumber: string;
   password: string;
   address: string;
-  status: "active" | "suspended";
+  status: ConsumerStatus;
 }
 
 export interface EditConsumerData extends Partial<CreateConsumerData> {}

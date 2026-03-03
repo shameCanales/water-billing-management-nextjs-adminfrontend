@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetAllProcessors } from "@/hooks/processors/useGetAllProcessors";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -34,6 +34,7 @@ import AddProcessorModal from "./AddProcessorModal";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
+import { useUpdateProcessorStatus } from "@/hooks/processors/useUpdateProcessorStatus";
 
 type StatusFilterType = ProcessorStatus | "all" | "";
 type RoleFilterType = ProcessorRole | "all" | "";
@@ -82,12 +83,29 @@ export default function ProcessorTable() {
   const totalPages = data?.pagination.totalPages || 0;
   const totalRecords = data?.pagination.total || 0;
 
+  const {
+    mutate: updateProcessorStatuss,
+    isPending: isUpdatingProcessorStatus,
+  } = useUpdateProcessorStatus();
+
+  const handleUpdateProcessorStatus = useCallback(
+    (id: string, status: ProcessorStatus) => {
+      updateProcessorStatuss({ id, status });
+    },
+    [updateProcessorStatuss],
+  );
+
   // ==========================================
   // 3. TABLE CONFIGURATION
   // ==========================================
   const columns = useMemo(
-    () => getProcessorColumns(openMenuRowId, setOpenMenuRowId),
-    [openMenuRowId],
+    () =>
+      getProcessorColumns(
+        openMenuRowId,
+        setOpenMenuRowId,
+        handleUpdateProcessorStatus,
+      ),
+    [openMenuRowId, handleUpdateProcessorStatus],
   );
 
   const table = useReactTable({

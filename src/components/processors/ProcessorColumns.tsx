@@ -1,15 +1,25 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Processor } from "@/types/processor";
+import { Processor, ProcessorStatus } from "@/types/processor";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { Info, Shield, UserCog } from "lucide-react";
+import {
+  Info,
+  Shield,
+  UserCog,
+  UserLock,
+  UserCheck,
+  Eye,
+  Edit,
+  UserX,
+  Trash2,
+} from "lucide-react";
 import { ActionMenuItem, ActionMenu } from "../ActionMenu";
-import { Eye, Edit, UserX, UserCheck, Trash2 } from "lucide-react";
 
 export const getProcessorColumns = (
   openMenuId: string | null,
   setOpenMenuId: (id: string | null) => void,
+  onUpdateProcessorStatus: (id: string, status: ProcessorStatus) => void,
 ): ColumnDef<Processor>[] => [
   {
     accessorKey: "lastName",
@@ -39,7 +49,9 @@ export const getProcessorColumns = (
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ getValue }) => <StatusBadge status={getValue() as string} capsLock={true} />,
+    cell: ({ getValue }) => (
+      <StatusBadge status={getValue() as string} capsLock={true} />
+    ),
   },
   {
     accessorKey: "status",
@@ -98,17 +110,22 @@ export const getProcessorColumns = (
 
           <ActionMenuItem
             className="text-gray-700"
-            onClick={() => console.log("Toggle Status", row.original._id)}
+            onClick={() => {
+              const status =
+                row.original.status === "active" ? "restricted" : "active";
+              onUpdateProcessorStatus(row.original._id, status);
+              setOpenMenuId(null);
+            }}
           >
             {row.original.status === "active" ? (
               <>
-                <UserX size={14} />
-                <p>Restrict</p>
+                <UserLock size={14} className="text-orange-600"/>
+                <p className="text-orange-600">Restrict</p>
               </>
             ) : (
               <>
-                <UserCheck size={14} />
-                <p>Activate</p>
+                <UserCheck size={14} className="text-green-600"/>
+                <p className="text-green-600">Activate</p>
               </>
             )}
           </ActionMenuItem>

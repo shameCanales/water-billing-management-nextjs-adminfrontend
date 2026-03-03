@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateConsumerStatus } from "@/lib/api/consumers";
-import { Consumer } from "@/types/consumers";
+import { Consumer, ConsumerStatus } from "@/types/consumers";
 import { notify } from "@/lib/utils/toast";
 import { APIResponse } from "@/types/shared";
 
@@ -10,7 +10,7 @@ export const useUpdateConsumerStatus = () => {
   return useMutation<
     APIResponse<Consumer>,
     Error,
-    { id: string; status: "active" | "suspended" }
+    { id: string; status: ConsumerStatus }
   >({
     mutationFn: ({ id, status }) => {
       const promise = updateConsumerStatus(id, status);
