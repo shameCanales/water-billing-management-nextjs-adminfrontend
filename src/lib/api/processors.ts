@@ -31,10 +31,15 @@ export const updateProcessorStatus = async (
   id: string,
   status: "active" | "restricted",
 ): Promise<APIResponse<Processor>> => {
-  const response = await api.patch<APIResponse<Processor>>(
-    `/processors/${id}/status`,
-    { status },
-  );
+  const response = await api.patch(`/processors/${id}/status`, { status });
+  return response.data;
+};
+
+export const editProcessor = async (
+  id: string,
+  data: EditProcessorData,
+): Promise<APIResponse<Processor>> => {
+  const response = await api.patch(`/processors/${id}`, data);
   return response.data;
 };
 
@@ -51,16 +56,6 @@ export const updateProcessorStatus = async (
 // };
 
 // // Edit a processor's details
-// export const editProcessor = async (
-//   id: string,
-//   data: EditProcessorData,
-// ): Promise<APIResponse<Processor>> => {
-//   const response = await api.patch<APIResponse<Processor>>(
-//     `/processors/${id}`,
-//     data,
-//   );
-//   return response.data;
-// };
 
 // // Delete a processor
 // export const deleteProcessor = async (

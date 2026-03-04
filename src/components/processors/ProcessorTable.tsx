@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetAllProcessors } from "@/hooks/processors/useGetAllProcessors";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, Consumer } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -29,18 +29,26 @@ import {
   PaginationContainer,
   PaginationFlexRow,
 } from "../ui/pagination/PaginationContainer";
-import type { ProcessorRole, ProcessorStatus } from "@/types/processor";
+import type {
+  Processor,
+  ProcessorRole,
+  ProcessorStatus,
+} from "@/types/processor";
 import AddProcessorModal from "./AddProcessorModal";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
 import { useUpdateProcessorStatus } from "@/hooks/processors/useUpdateProcessorStatus";
+import EditProcessorModal from "./EditProcessorModal";
 
 type StatusFilterType = ProcessorStatus | "all" | "";
 type RoleFilterType = ProcessorRole | "all" | "";
 
 export default function ProcessorTable() {
   const dispatch = useDispatch<AppDispatch>();
+  const [selectedProcessor, setSelectedProcessor] = useState<Processor | null>(
+    null,
+  );
   // ==========================================
   // 1. STATE MANAGEMENT
   // ==========================================
@@ -95,6 +103,14 @@ export default function ProcessorTable() {
     [updateProcessorStatuss],
   );
 
+  const handleEditClick = useCallback(
+    (processor: Processor) => {
+      setSelectedProcessor(processor);
+      dispatch(uiActions.openEditProcessorModal()); // Open the modal via Redux
+    },
+    [dispatch],
+  );
+
   // ==========================================
   // 3. TABLE CONFIGURATION
   // ==========================================
@@ -103,9 +119,10 @@ export default function ProcessorTable() {
       getProcessorColumns(
         openMenuRowId,
         setOpenMenuRowId,
+        handleEditClick,
         handleUpdateProcessorStatus,
       ),
-    [openMenuRowId, handleUpdateProcessorStatus],
+    [openMenuRowId, handleEditClick, handleUpdateProcessorStatus],
   );
 
   const table = useReactTable({
@@ -135,6 +152,8 @@ export default function ProcessorTable() {
   return (
     <div className="space-y-6 font-sans mt-8">
       <AddProcessorModal />
+      <EditProcessorModal processorToEdit={selectedProcessor} />
+
       <TableToolbar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}

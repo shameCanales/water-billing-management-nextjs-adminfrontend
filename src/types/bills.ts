@@ -1,8 +1,7 @@
 import { PaginationMeta } from "./pagination";
+import type { ConnectionStatus, ConnectionType } from "./connections";
 
 export type BillStatus = "paid" | "unpaid" | "overdue";
-export type ConnectionType = "residential" | "commercial";
-export type ConnectionStatus = "connected" | "disconnected";
 
 export interface BillConsumer {
   _id: string;

@@ -11,11 +11,11 @@ import { useWindowWidth } from "@/hooks/useWindowWidth";
 import { useEffect, useMemo } from "react";
 
 const links = [
-  {
-    route: "/dashboard",
-    label: "Dashboard",
-    iconName: "category.png",
-  },
+  // {
+  //   route: "/dashboard",
+  //   label: "Dashboard",
+  //   iconName: "category.png",
+  // },
   {
     route: "/consumers",
     label: "Consumers",
@@ -31,21 +31,21 @@ const links = [
     label: "Bills",
     iconName: "file-invoice-dollar.png",
   },
-  {
-    route: "/incidents",
-    label: "Incidents",
-    iconName: "triangle-warning.png",
-  },
-  {
-    route: "/announcements*",
-    label: "Announcements",
-    iconName: "bullhorn.png",
-  },
-  {
-    route: "/reports",
-    label: "Reports",
-    iconName: "stats.png",
-  },
+  // {
+  //   route: "/incidents",
+  //   label: "Incidents",
+  //   iconName: "triangle-warning.png",
+  // },
+  // {
+  //   route: "/announcements*",
+  //   label: "Announcements",
+  //   iconName: "bullhorn.png",
+  // },
+  // {
+  //   route: "/reports",
+  //   label: "Reports",
+  //   iconName: "stats.png",
+  // },
   {
     route: "/staffs",
     label: "Staffs",

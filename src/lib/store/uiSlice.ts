@@ -14,6 +14,7 @@ interface InitialUiState {
   deleteBillModalIsOpen: boolean;
   viewBillDetailsModalIsOpen: boolean;
   addProcessorModalIsOpen: boolean;
+  editProcessorModalIsOpen: boolean;
 }
 
 const initialUiState: InitialUiState = {
@@ -35,7 +36,10 @@ const initialUiState: InitialUiState = {
   editBillModalIsOpen: false,
   deleteBillModalIsOpen: false,
   viewBillDetailsModalIsOpen: false,
+
+  //processor modals
   addProcessorModalIsOpen: false,
+  editProcessorModalIsOpen: false,
 };
 
 export const uiSlice = createSlice({
@@ -117,6 +121,12 @@ export const uiSlice = createSlice({
     },
     closeAddProcessorModal: (state) => {
       state.addProcessorModalIsOpen = false;
+    },
+    openEditProcessorModal: (state) => {
+      state.editProcessorModalIsOpen = true;
+    },
+    closeEditProcessorModal: (state) => {
+      state.editProcessorModalIsOpen = false;
     },
   },
 });

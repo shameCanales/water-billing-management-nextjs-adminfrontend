@@ -3,6 +3,7 @@ import { updateConnectionStatus } from "@/lib/api/connections";
 import type { Connection } from "@/types/connections";
 import { APIResponse } from "@/types/shared";
 import { notify } from "@/lib/utils/toast";
+import { ConnectionStatus } from "@/types/connections";
 
 export const useUpdateConnectionStatus = () => {
   const queryClient = useQueryClient();
@@ -10,7 +11,7 @@ export const useUpdateConnectionStatus = () => {
   return useMutation<
     APIResponse<Connection>,
     Error,
-    { id: string; status: "connected" | "disconnected" }
+    { id: string; status: ConnectionStatus }
   >({
     mutationFn: ({ id, status }) => {
       const promise = updateConnectionStatus(id, status);

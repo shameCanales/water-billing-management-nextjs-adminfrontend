@@ -19,6 +19,7 @@ import { ActionMenuItem, ActionMenu } from "../ActionMenu";
 export const getProcessorColumns = (
   openMenuId: string | null,
   setOpenMenuId: (id: string | null) => void,
+  onEdit: (processor: Processor) => void,
   onUpdateProcessorStatus: (id: string, status: ProcessorStatus) => void,
 ): ColumnDef<Processor>[] => [
   {
@@ -96,14 +97,10 @@ export const getProcessorColumns = (
         >
           <ActionMenuItem
             className="text-gray-700"
-            onClick={() => console.log("View", row.original._id)}
-          >
-            <Eye size={14} /> View Details
-          </ActionMenuItem>
-
-          <ActionMenuItem
-            className="text-gray-700"
-            onClick={() => console.log("Edit Processor", row.original._id)}
+            onClick={() => {
+              onEdit(row.original);
+              setOpenMenuId(null);
+            }}
           >
             <Edit size={14} /> Edit Processor
           </ActionMenuItem>
@@ -119,13 +116,13 @@ export const getProcessorColumns = (
           >
             {row.original.status === "active" ? (
               <>
-                <UserLock size={14} className="text-orange-600"/>
+                <UserLock size={14} className="text-orange-600" />
                 <p className="text-orange-600">Restrict</p>
               </>
             ) : (
               <>
-                <UserCheck size={14} className="text-green-600"/>
-                <p className="text-green-600">Activate</p>
+                <UserCheck size={14}/>
+                <p >Activate</p>
               </>
             )}
           </ActionMenuItem>
