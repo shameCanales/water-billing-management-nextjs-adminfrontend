@@ -43,6 +43,16 @@ export const editProcessor = async (
   return response.data;
 };
 
+export const deleteProcessor = async (
+  id: string,
+): Promise<{
+  success: boolean;
+  message: string;
+}> => {
+  const response = await api.delete(`/processors/${id}`);
+  return response.data;
+};
+
 // // Get a single processor by ID
 // export const getProcessorById = async (
 //   id: string,
@@ -56,17 +66,6 @@ export const editProcessor = async (
 // };
 
 // // Edit a processor's details
-
-// // Delete a processor
-// export const deleteProcessor = async (
-//   id: string,
-// ): Promise<{
-//   success: boolean;
-//   message: string;
-// }> => {
-//   const response = await api.delete(`/processors/${id}`);
-//   return response.data;
-// };
 
 // // Register the very first manager (Initial setup / Public route)
 // export const registerManager = async (

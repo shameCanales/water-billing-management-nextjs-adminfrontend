@@ -13,7 +13,7 @@ export const getConsumerColumns = (
   setOpenMenuId: (id: string | null) => void,
   onEdit: (consumer: Consumer) => void,
   onDelete: (consumer: Consumer) => void,
-  onUpdateConsumerStatus: (id: string, status: "active" | "suspended") => void
+  onUpdateConsumerStatus: (id: string, status: "active" | "suspended") => void,
 ): ColumnDef<Consumer>[] => [
   {
     accessorKey: "lastName", // should match from data fields received from api?
@@ -141,7 +141,7 @@ export const getConsumerColumns = (
           <ActionMenuItem
             className="text-red-600 hover:bg-red-50"
             onClick={() => {
-              console.log("consuCol Delete", row.original._id); // Trigger the Delete Handler
+              console.log("consuCol Delete", row.original._id); // check natin
               onDelete(row.original); // Trigger the Delete Handler
               setOpenMenuId(null);
             }}

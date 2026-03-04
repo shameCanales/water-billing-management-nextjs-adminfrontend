@@ -1,15 +1,16 @@
 "use client";
 
-import { useGetAllProcessors } from "@/hooks/processors/useGetAllProcessors";
-import { useState, useEffect, useMemo, useCallback, Consumer } from "react";
+"use client";
+
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   useReactTable,
   getCoreRowModel,
   flexRender,
-  SortingState,
-  PaginationState,
+  type SortingState,
+  type PaginationState,
 } from "@tanstack/react-table";
-import { StatusBadge } from "../ui/StatusBadge";
 import {
   Filter,
   ChevronLeft,
@@ -18,9 +19,19 @@ import {
   ChevronsRight,
   Shield,
 } from "lucide-react";
-import { getProcessorColumns } from "./ProcessorColumns";
-import TableToolbar from "../ui/table/TableToolbar";
+
+// Store
+import { AppDispatch } from "@/lib/store/store";
+import { uiActions } from "@/lib/store/uiSlice";
+
+// Hooks
+import { useGetAllProcessors } from "@/hooks/processors/useGetAllProcessors";
+import { useUpdateProcessorStatus } from "@/hooks/processors/useUpdateProcessorStatus";
+
+// Shared Components
 import { TableContainer } from "../ui/table/Table";
+import TableToolbar from "../ui/table/TableToolbar";
+import { StatusBadge } from "../ui/StatusBadge";
 import PaginationButton from "../ui/pagination/PaginationButton";
 import PaginationInfo from "../ui/pagination/PaginationInfo";
 import PaginationPageSizeSelect from "../ui/pagination/PaginationPageSizeSelect";
@@ -29,17 +40,19 @@ import {
   PaginationContainer,
   PaginationFlexRow,
 } from "../ui/pagination/PaginationContainer";
+
+// Specific Components
+import { getProcessorColumns } from "./ProcessorColumns";
+import AddProcessorModal from "./AddProcessorModal";
+import EditProcessorModal from "./EditProcessorModal";
+import DeleteProcessorModal from "./DeleteProcessorModal";
+
+// 6. Types
 import type {
   Processor,
   ProcessorRole,
   ProcessorStatus,
 } from "@/types/processor";
-import AddProcessorModal from "./AddProcessorModal";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/store/store";
-import { uiActions } from "@/lib/store/uiSlice";
-import { useUpdateProcessorStatus } from "@/hooks/processors/useUpdateProcessorStatus";
-import EditProcessorModal from "./EditProcessorModal";
 
 type StatusFilterType = ProcessorStatus | "all" | "";
 type RoleFilterType = ProcessorRole | "all" | "";
@@ -111,6 +124,14 @@ export default function ProcessorTable() {
     [dispatch],
   );
 
+  const handleDeleteClick = useCallback(
+    (processor: Processor) => {
+      setSelectedProcessor(processor);
+      dispatch(uiActions.openDeleteProcessorModal());
+    },
+    [dispatch],
+  );
+
   // ==========================================
   // 3. TABLE CONFIGURATION
   // ==========================================
@@ -120,9 +141,15 @@ export default function ProcessorTable() {
         openMenuRowId,
         setOpenMenuRowId,
         handleEditClick,
+        handleDeleteClick,
         handleUpdateProcessorStatus,
       ),
-    [openMenuRowId, handleEditClick, handleUpdateProcessorStatus],
+    [
+      openMenuRowId,
+      handleEditClick,
+      handleDeleteClick,
+      handleUpdateProcessorStatus,
+    ],
   );
 
   const table = useReactTable({
@@ -153,6 +180,7 @@ export default function ProcessorTable() {
     <div className="space-y-6 font-sans mt-8">
       <AddProcessorModal />
       <EditProcessorModal processorToEdit={selectedProcessor} />
+      <DeleteProcessorModal processorToDelete={selectedProcessor} />
 
       <TableToolbar
         searchTerm={searchTerm}

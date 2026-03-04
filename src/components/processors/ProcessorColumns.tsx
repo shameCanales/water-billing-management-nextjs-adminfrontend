@@ -9,9 +9,7 @@ import {
   UserCog,
   UserLock,
   UserCheck,
-  Eye,
   Edit,
-  UserX,
   Trash2,
 } from "lucide-react";
 import { ActionMenuItem, ActionMenu } from "../ActionMenu";
@@ -20,6 +18,7 @@ export const getProcessorColumns = (
   openMenuId: string | null,
   setOpenMenuId: (id: string | null) => void,
   onEdit: (processor: Processor) => void,
+  onDelete: (processor: Processor) => void,
   onUpdateProcessorStatus: (id: string, status: ProcessorStatus) => void,
 ): ColumnDef<Processor>[] => [
   {
@@ -116,20 +115,23 @@ export const getProcessorColumns = (
           >
             {row.original.status === "active" ? (
               <>
-                <UserLock size={14} className="text-orange-600" />
-                <p className="text-orange-600">Restrict</p>
+                <UserLock size={14} />
+                <p>Restrict</p>
               </>
             ) : (
               <>
-                <UserCheck size={14}/>
-                <p >Activate</p>
+                <UserCheck size={14} />
+                <p>Activate</p>
               </>
             )}
           </ActionMenuItem>
 
           <ActionMenuItem
             className="text-red-600 hover:bg-red-50"
-            onClick={() => console.log("Delete Processor", row.original._id)}
+            onClick={() => {
+              onDelete(row.original);
+              setOpenMenuId(null);
+            }}
           >
             <Trash2 size={14} /> Delete Processor
           </ActionMenuItem>
