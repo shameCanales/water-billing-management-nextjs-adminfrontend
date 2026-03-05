@@ -1,4 +1,5 @@
 import BillingConfiguration from "@/components/settings/BillingConfiguration";
+import SurchargeConfiguration from "@/components/settings/SurchargeRateConfiguration";
 
 export default function Settings() {
   return (
@@ -9,6 +10,7 @@ export default function Settings() {
       </p>
 
       <BillingConfiguration />
+      <SurchargeConfiguration />
     </div>
   );
 }

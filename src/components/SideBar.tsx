@@ -6,7 +6,7 @@ import Image from "next/image";
 import { AppDispatch, RootState } from "@/lib/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "@/lib/store/uiSlice";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Droplets, LogOut } from "lucide-react";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
 import { useEffect, useMemo } from "react";
 
@@ -110,80 +110,78 @@ export default function SideBar() {
   return (
     <div
       className={` ${
-        sidebarIsExpanded ? "w-[250px]" : "w-auto"
-      } p-4 h-full border-r-stone-300 bg-slate-50 z-50 ${
+        sidebarIsExpanded ? "w-[260px]" : "w-20"
+      } h-full bg-linear-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] transition-all duration-300 z-50 flex flex-col ${
         mobileSidebarIsOpen ? "block absolute" : "hidden"
       } xl:block xl:static`}
     >
+      {/* Collapse Toggle - Now styled like Figma */}
       <button
-        className="hidden xl:flex bg-slate-200 p-2 rounded-md border-slate-400 border mb-8 w-full"
+        className="hidden xl:flex items-center justify-center p-2 hover:bg-white/10 rounded-lg transition-colors m-4 mb-2"
         onClick={() => handleToggleExpandSidebar()}
       >
-        {sidebarIsExpanded ? <PanelLeftClose /> : <PanelLeftOpen />}
-        {sidebarIsExpanded && <span className="ml-2">Collapse</span>}
+        <div className="text-gray-400">
+          {sidebarIsExpanded ? (
+            <PanelLeftClose size={18} />
+          ) : (
+            <PanelLeftOpen size={18} />
+          )}
+        </div>
+        {sidebarIsExpanded && (
+          <span className="ml-2 text-xs text-gray-400 uppercase tracking-widest font-semibold">
+            Collapse
+          </span>
+        )}
       </button>
 
+      {/* Logo Area */}
       <div
-        className={`flex items-center ${
-          sidebarIsExpanded ? "justify-between" : "justify-center"
-        } mt-3`}
+        className={`flex items-center gap-3 px-5 py-6 ${sidebarIsExpanded ? "" : "justify-center"}`}
       >
-        <div>
-          <div className="flex items-center ">
-            <Image
-              className=" bg-blue-700 p-2 rounded-md w-8"
-              src={"/hand-holding-droplet.png"}
-              alt="water billing icon"
-              width="250"
-              height="250"
-            />
-            {sidebarIsExpanded && (
-              <p className="font-semibold ml-4 ">Water Billing</p>
-            )}
-          </div>
+        <div className="w-10 h-10 bg-gradient-to-br from-[#3b82f6] via-[#2563eb] to-[#1d4ed8] rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 shrink-0">
+          <Droplets className="w-5 h-5 text-white" />
         </div>
-
-        <button className="xl:hidden" onClick={() => handleCloseNav()}>
-          <Image
-            className="w-8 "
-            src="/cross-small.png"
-            alt="close nav"
-            width="500"
-            height="500"
-          />
-        </button>
+        {sidebarIsExpanded && (
+          <span className="text-[16px] text-white font-semibold tracking-tight">
+            WaterBill Pro
+          </span>
+        )}
       </div>
 
       <UserProfile />
 
-      <ul className="grid py-4">
-        {visibleLinks.map((link) => (
-          <li key={link.route}>
-            <SideBarLink
-              route={link.route}
-              label={link.label}
-              icon={link.iconName}
-            />
-          </li>
-        ))}
-      </ul>
+      {/* Navigation Menu */}
+      <nav className="flex-1 px-3 py-4 overflow-y-auto">
+        <ul className="space-y-1">
+          {visibleLinks.map((link) => (
+            <li key={link.route}>
+              <SideBarLink
+                route={link.route}
+                label={link.label}
+                icon={link.iconName}
+              />
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-      <button
-        className={`font-bold border-t border-slate-400 py-3 flex items-center ${
-          sidebarIsExpanded ? "ml-2" : "justify-center "
-        } w-full`}
-        disabled={loggingOut}
-        onClick={() => handleLogout()}
-      >
-        <Image
-          className="w-4"
-          src="/exit.png"
-          alt="logout button"
-          width={500}
-          height={500}
-        />
-        {sidebarIsExpanded && <p className="text-red-700 ml-3">Logout</p>}
-      </button>
+      {/* Logout Button */}
+      <div className="px-3 pb-6 border-t border-white/10 pt-4">
+        <button
+          className={`w-full flex items-center h-11 transition-all duration-200 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl ${
+            sidebarIsExpanded ? "px-3.5" : "justify-center"
+          }`}
+          disabled={loggingOut}
+          onClick={() => handleLogout()}
+        >
+          <LogOut
+            className={`w-[18px] h-[18px] ${sidebarIsExpanded ? "mr-3" : ""}`}
+          />
+          {sidebarIsExpanded && (
+            <span className="font-medium text-[13.5px]">Logout</span>
+          )}
+        </button>
+      </div>
     </div>
   );
 }

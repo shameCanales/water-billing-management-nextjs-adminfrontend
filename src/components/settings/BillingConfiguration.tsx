@@ -85,84 +85,93 @@ export default function BillingConfiguration() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 max-w-3xl">
-      {/* --- Header --- */}
-      <div className="flex items-start gap-3 mb-6">
-        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-          <DollarSign className="w-6 h-6" />
-        </div>
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">
-            Billing Configuration
-          </h2>
-          <p className="text-gray-500 text-sm">
+    <div className="max-w-3xl">
+      <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+        {/* Card Header */}
+        <div className="p-6 pb-2">
+          <div className="flex items-center gap-2 mb-1.5">
+            <DollarSign className="w-5 h-5 text-blue-600" />
+            <h3 className="text-lg font-semibold text-slate-900 leading-none tracking-tight">
+              Billing Configuration
+            </h3>
+          </div>
+          <p className="text-sm text-slate-500">
             Set the default charge rate for water consumption
           </p>
         </div>
-      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div>
-          <FormLabel htmlFor="amount">
-            Charge per Cubic Meter (₱) <RequiredFormFieldIndicator />
-          </FormLabel>
+        {/* Card Content */}
+        <div className="p-6 pt-4 space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <FormLabel htmlFor="amount">
+                Charge per Cubic Meter (₱) <RequiredFormFieldIndicator />
+              </FormLabel>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            {/* Input Wrapper */}
-            <div>
-              <FormInput
-                id="amount"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                disabled={isLoadingSettings}
-                {...register("amount")}
-              />
+              <div className="flex gap-3 items-start">
+                <div className="relative flex-1 max-w-xs">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">
+                    ₱
+                  </span>
+                  <FormInput
+                    id="amount"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="25.00"
+                    disabled={isLoadingSettings}
+                    className="pl-7 text-[14px]"
+                    {...register("amount")}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  isLoading={isUpdating}
+                  disabled={isLoadingSettings}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  <Save className="mr-2 w-4 h-4" />
+                  {isUpdating ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
+
+              <p className="text-[12px] text-slate-500">
+                This rate will be used as the default when creating new bills.
+                Philippine Peso (PHP) currency.
+              </p>
               {errors.amount && (
                 <FormValidationErrorMsg error={errors.amount.message} />
               )}
             </div>
 
-            <Button
-              type="submit"
-              isLoading={isUpdating}
-              disabled={isLoadingSettings}
-              className="w-full sm:w-auto"
-            >
-              <Save className="mr-2 w-4 h-4" />
-              Save Changes
-            </Button>
-          </div>
-
-          <p className="text-xs text-gray-400 mt-2">
-            This rate will be used as the default when creating new bills.
-            Philippine Peso (PHP).
-          </p>
-        </div>
-
-        {/* --- Info Box --- */}
-        <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-5 mt-6">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            Current Settings
-          </h3>
-
-          <div className="grid gap-2 text-sm">
-            <div className="flex justify-between items-center border-b border-blue-100 pb-2">
-              <span className="text-gray-500">Default Rate:</span>
-              <span className="font-mono font-bold text-gray-900 text-base">
-                ₱ {settings?.chargePerCubicMeter.toFixed(2) ?? "0.00"} per m³
-              </span>
+            {/* Information Box */}
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <h4 className="text-[13px] text-slate-900 mb-2 font-semibold">
+                Current Settings
+              </h4>
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-slate-600">Default Rate:</span>
+                  <span className="text-slate-900 font-medium">
+                    ₱
+                    {settings?.chargePerCubicMeter.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    }) ?? "0.00"}{" "}
+                    per m³
+                  </span>
+                </div>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-slate-600">Currency:</span>
+                  <span className="text-slate-900 font-medium">
+                    Philippine Peso (PHP)
+                  </span>
+                </div>
+              </div>
             </div>
-
-            <div className="flex justify-between items-center pt-1">
-              <span className="text-gray-500">Currency:</span>
-              <span className="font-medium text-gray-900">
-                Philippine Peso (PHP)
-              </span>
-            </div>
-          </div>
+          </form>
         </div>
-      </form>
+      </div>
 
       {/* --- Confirmation Modal --- */}
       <ConfirmChangeChargeModal
@@ -172,6 +181,8 @@ export default function BillingConfiguration() {
         newAmount={pendingAmount}
         currentAmount={settings?.chargePerCubicMeter}
         isUpdating={isUpdating}
+        settingName="Water Charge"
+        unit="₱"
       />
     </div>
   );

@@ -1,63 +1,97 @@
 "use client";
 
 import { Modal } from "../ui/Modal";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ArrowRight } from "lucide-react";
+import Button from "../ui/Button";
 
-interface ConfirmChangeChargeModalProps {
+interface ConfirmSettingChangeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   newAmount: number | null;
   currentAmount?: number;
   isUpdating: boolean;
+  settingName: string;
+  unit: "₱" | "%";
 }
 
-export default function ConfirmChangeChargeModal({
+export default function ConfirmSettingChangeModal({
   isOpen,
   onClose,
   onConfirm,
   newAmount,
   currentAmount,
   isUpdating,
-}: ConfirmChangeChargeModalProps) {
+  settingName,
+  unit,
+}: ConfirmSettingChangeModalProps) {
+  
+  const formatValue = (val: number | null | undefined) => {
+    const num = val ?? 0;
+    // For surchargeRate, backend needs a decimal (0.2), UI shows % (20)
+    const formatted = num.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    return unit === "₱" ? `₱${formatted}` : `${num}%`;
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Confirm Rate Change"
-      description="Are you sure you want to update the default charge rate?"
+      title="Confirm Setting Change"
+      description={`Review the updates to the ${settingName.toLowerCase()} configuration.`}
     >
       <div className="space-y-6">
-        <div className="flex items-start gap-4 p-4 bg-yellow-50 rounded-lg border border-yellow-100">
-          <div className="p-2 bg-white rounded-full shadow-sm">
-            <AlertCircle className="w-5 h-5 text-yellow-600" />
+        {/* Visual Comparison Section */}
+        <div className="grid grid-cols-1 gap-4">
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Current {settingName}</p>
+              <p className="text-lg font-bold text-gray-600 line-through decoration-gray-300">
+                {formatValue(currentAmount)}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50 text-blue-600">
+              <ArrowRight size={20} />
+            </div>
+
+            <div className="space-y-1 text-right">
+              <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider">New {settingName}</p>
+              <p className="text-xl font-black text-gray-900">
+                {formatValue(newAmount)}
+              </p>
+            </div>
           </div>
-          <div>
-            <h4 className="text-sm font-medium text-yellow-900">Please Verify</h4>
-            <p className="text-sm text-yellow-700 mt-1">
-              You are about to change the default charge from{" "}
-              <strong>₱ {currentAmount?.toFixed(2) ?? "0.00"}</strong> to{" "}
-              <strong>₱ {newAmount?.toFixed(2) ?? "0.00"}</strong>. All new bills created from now on will use this rate.
+        </div>
+
+        {/* Warning Alert */}
+        <div className="flex items-start gap-3 p-4 bg-amber-50/50 rounded-xl border border-amber-100">
+          <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <h4 className="text-sm font-bold text-amber-900">Verification Required</h4>
+            <p className="text-xs leading-relaxed text-amber-700">
+              Applying this change will update the system-wide <strong>{settingName}</strong>. 
+              All new billing calculations generated from this point forward will utilize this updated value.
             </p>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-2">
-          <button
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+          <Button
+            variant="outline"
             onClick={onClose}
             disabled={isUpdating}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 disabled:opacity-50"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onConfirm}
-            disabled={isUpdating}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            isLoading={isUpdating}
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100"
           >
-            {isUpdating ? "Saving..." : "Confirm Change"}
-          </button>
+            Confirm & Apply
+          </Button>
         </div>
       </div>
     </Modal>
