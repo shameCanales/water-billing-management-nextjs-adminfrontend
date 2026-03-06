@@ -30,11 +30,17 @@ export interface Bill {
   _id: string;
   connection: BillConnection;
   monthOf: string;
-  dueDate: string;
+  dueDate: string; // why can't we set the dates as Date not string, because in backend they are set as date.
   meterReading: number;
+
   chargePerCubicMeter: number;
+  appliedSurchargePercent: number;
   consumedUnits: number;
-  amount: number;
+
+  billAmount: number;
+  surchargeAmount: number;
+  totalAmount: number;
+
   status: BillStatus;
   paidAt: string | null;
   createdAt: string;

@@ -170,8 +170,8 @@ export default function AddBillModal() {
             <FormInput
               id="meterReading"
               type="number"
-              step="0.01"
-              placeholder="0.00"
+              step="1"
+              placeholder="0"
               {...register("meterReading", { valueAsNumber: true })}
             />
             {errors.meterReading && (
@@ -184,7 +184,6 @@ export default function AddBillModal() {
             <FormSelect id="status" {...register("status")}>
               <option value="unpaid">Unpaid</option>
               <option value="paid">Paid</option>
-              <option value="overdue">Overdue</option>
             </FormSelect>
           </div>
         </div>

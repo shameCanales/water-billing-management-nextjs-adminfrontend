@@ -83,13 +83,15 @@ export const getBillColumns = (
       id: "readings",
       header: "Readings (Prev → Curr)",
       cell: ({ row }) => {
-        const current = row.original.meterReading;
-        const previous = current - row.original.consumedUnits;
+        const { meterReading, consumedUnits } = row.original;
+        const previous = meterReading - consumedUnits;
         return (
           <div className="flex items-center gap-1.5 text-sm">
             <span className="text-gray-400 font-mono">{previous}</span>
             <span className="text-gray-300">→</span>
-            <span className="text-gray-900 font-bold font-mono">{current}</span>
+            <span className="text-gray-900 font-bold font-mono">
+              {meterReading}
+            </span>
           </div>
         );
       },
@@ -100,17 +102,45 @@ export const getBillColumns = (
       cell: ({ getValue, row }) => (
         <div className="flex flex-col">
           <span className="font-bold text-gray-900 text-sm">
-            {getValue() as number} m³
+            {row.original.consumedUnits} m³
           </span>
           <span className="text-[10px] text-gray-400">
-            @ ₱{row.original.chargePerCubicMeter}/m³
+            @ ₱{row.original.chargePerCubicMeter.toFixed(2)}/m³
           </span>
         </div>
       ),
     },
     {
-      accessorKey: "amount",
-      header: "Total Amount",
+      accessorKey: "billAmount",
+      header: "Bill Amount",
+      cell: ({ getValue }) => (
+        <span className="text-gray-700 text-sm font-medium">
+          ₱
+          {(getValue() as number).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "surchargeAmount",
+      header: "Surcharge",
+      cell: ({ row }) => {
+        const amount = row.original.surchargeAmount;
+        return (
+          <span
+            className={`text-sm ${amount > 0 ? "text-red-500 font-bold" : "text-gray-400"}`}
+          >
+            {amount > 0
+              ? `+ ₱${amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`
+              : "₱0.00"}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "totalAmount",
+      header: "Total Due",
       cell: ({ getValue }) => (
         <span className="font-bold text-blue-600 text-sm">
           ₱
