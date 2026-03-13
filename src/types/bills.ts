@@ -1,16 +1,21 @@
 import { PaginationMeta } from "./pagination";
-import type { ConnectionStatus, ConnectionType } from "./connections";
+import type {
+  ConnectionStatus,
+  ConnectionType,
+  ConnectionSummary,
+} from "./connections";
+import { ProcessorSummary } from "./processor";
 
 export type BillStatus = "paid" | "unpaid" | "overdue";
 
 export interface BillConsumer {
-  _id: string;
   firstName: string;
   middleName?: string;
   lastName: string;
-  email: string;
   mobileNumber: string;
-  address: string;
+  // _id: string;
+  // email: string;
+  // address: string;
 }
 
 export interface BillConnection {
@@ -18,38 +23,61 @@ export interface BillConnection {
   consumer: BillConsumer;
   meterNumber: number;
   address: string;
-  connectionDate: string;
   type: ConnectionType;
-  status: ConnectionStatus;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  // connectionDate: string;
+  // status: ConnectionStatus;
+  // createdAt: string;
+  // updatedAt: string;
+  // __v: number;
 }
 
+// complete data for viewing
 export interface Bill {
   _id: string;
   connection: BillConnection;
   monthOf: string;
-  dueDate: string; // why can't we set the dates as Date not string, because in backend they are set as date.
+  dueDate: string;
   meterReading: number;
-
   chargePerCubicMeter: number;
   appliedSurchargePercent: number;
   consumedUnits: number;
-
   billAmount: number;
   surchargeAmount: number;
   totalAmount: number;
-
   status: BillStatus;
   paidAt: string | null;
+  createdBy: ProcessorSummary;
+  lastEditBy: ProcessorSummary | null;
+  lastEditAt: string | null;
+  processedBy: ProcessorSummary | null;
   createdAt: string;
   updatedAt: string;
   __v: number;
 }
 
+// lightweight data for list
+export interface BillSummary {
+  _id: string;
+  connection: ConnectionSummary;
+  monthOf: string;
+  dueDate: string;
+  meterReading: number;
+  chargePerCubicMeter: number;
+  consumedUnits: number;
+  billAmount: number;
+  surchargeAmount: number;
+  totalAmount: number;
+  status: BillStatus;
+  paidAt: string | null;
+  createdBy: ProcessorSummary;
+  lastEditBy: ProcessorSummary;
+  lastEditAt: string | null;
+  processedBy: ProcessorSummary;
+  createdAt: string;
+}
+
 export interface PaginatedBillResult {
-  bills: Bill[];
+  bills: BillSummary[];
   pagination: PaginationMeta;
 }
 

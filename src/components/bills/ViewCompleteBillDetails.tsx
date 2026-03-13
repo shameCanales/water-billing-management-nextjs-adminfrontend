@@ -2,7 +2,7 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "@/components/ui/Modal";
-import { Bill } from "@/types/bills";
+import type { Bill } from "@/types/bills";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import { RootState } from "@/lib/store/store";
 import { uiActions } from "@/lib/store/uiSlice";
@@ -16,7 +16,7 @@ export default function ViewBillDetailsModal({
 }: ViewBillDetailsModalProps) {
   const dispatch = useDispatch();
   const isOpen = useSelector(
-    (state: RootState) => state.ui.viewBillDetailsModalIsOpen
+    (state: RootState) => state.ui.viewBillDetailsModalIsOpen,
   );
 
   const handleClose = () => {
@@ -47,9 +47,9 @@ export default function ViewBillDetailsModal({
                 label="Name"
                 value={`${consumer.firstName} ${consumer.middleName || ""} ${consumer.lastName}`}
               />
-              <DetailItem label="Email" value={consumer.email} />
+              {/* <DetailItem label="Email" value={consumer.email} /> */}
               <DetailItem label="Mobile" value={consumer.mobileNumber} />
-              <DetailItem label="Address" value={consumer.address} />
+              {/* <DetailItem label="Address" value={consumer.address} /> */}
             </div>
           ) : (
             <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
@@ -79,7 +79,7 @@ export default function ViewBillDetailsModal({
                 label="Service Address"
                 value={billToView.connection.address}
               />
-              <DetailItem
+              {/* <DetailItem
                 label="Status"
                 value={billToView.connection.status}
                 className={
@@ -87,11 +87,11 @@ export default function ViewBillDetailsModal({
                     ? "text-green-600 font-medium capitalize"
                     : "text-red-600 font-medium capitalize"
                 }
-              />
-              <DetailItem
+              /> */}
+              {/* <DetailItem
                 label="Connected Since"
                 value={formatDate(billToView.connection.connectionDate)}
-              />
+              /> */}
             </div>
           ) : (
             <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
@@ -128,7 +128,7 @@ export default function ViewBillDetailsModal({
             />
             <DetailItem
               label="Total Amount"
-              value={formatCurrency(billToView.amount)}
+              value={formatCurrency(billToView.totalAmount)}
               className="text-lg font-bold text-blue-600"
             />
           </div>
@@ -154,7 +154,9 @@ export default function ViewBillDetailsModal({
             <DetailItem
               label="Paid At"
               value={
-                billToView.paidAt ? formatDate(billToView.paidAt) : "Not yet paid"
+                billToView.paidAt
+                  ? formatDate(billToView.paidAt)
+                  : "Not yet paid"
               }
             />
           </div>

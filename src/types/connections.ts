@@ -1,4 +1,6 @@
 import { PaginationMeta } from "./pagination";
+import type { consumerSummary } from "./consumers";
+import { ProcessorSummary } from "./processor";
 
 export type ConnectionType = "residential" | "commercial";
 export type ConnectionStatus = "connected" | "disconnected";
@@ -12,16 +14,28 @@ export interface ConnectionConsumer {
   mobileNumber: string;
 }
 
+// should we have different types for fulldetails, listdetails, and populatesummarydetails?
+
 export interface Connection {
   _id: string;
-  consumer: ConnectionConsumer;
+  consumer: consumerSummary;
   meterNumber: number;
   address: string;
-  connectionDate: string;
   type: ConnectionType;
   status: ConnectionStatus;
+  connectionDate: string;
+  creatdBy: ProcessorSummary;
+  lastEditBy: ProcessorSummary | null;
+  lastEditAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ConnectionSummary {
+  consumer: consumerSummary;
+  meterNumber: number;
+  address: string;
+  type: ConnectionType;
 }
 
 export interface PaginatedConnectionResult {

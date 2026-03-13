@@ -1,17 +1,18 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Bill } from "@/types/bills";
+import { Bill, BillSummary } from "@/types/bills";
 import { ActionMenu, ActionMenuItem } from "@/components/ActionMenu";
 import { Eye, Printer, CreditCard, Info } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { format } from "date-fns";
+import { AuditTrailContent } from "./AuditTrailContent";
 
 export const getBillColumns = (
   openMenuId: string | null,
   setOpenMenuId: (id: string | null) => void,
-  onView: (bill: Bill) => void,
-): ColumnDef<Bill>[] => {
+  onView: (bill: BillSummary) => void,
+): ColumnDef<BillSummary>[] => {
   return [
     {
       accessorKey: "connection.consumer",
@@ -58,6 +59,11 @@ export const getBillColumns = (
         return (
           <div className="flex flex-col">
             <span className="font-bold text-gray-900 font-mono text-sm">
+              <span
+                className={`${connection.type === "residential" ? " text-blue-700" : " text-purple-500"} mr-1`}
+              >
+                {connection.type[0].toLocaleUpperCase()}
+              </span>
               {connection.meterNumber}
             </span>
             <span
@@ -172,12 +178,24 @@ export const getBillColumns = (
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-2">
-          <button
-            onClick={() => onView(row.original)}
-            className="text-gray-400 hover:text-blue-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <Info size={18} />
-          </button>
+          <div className="group relative">
+            <button className="text-gray-400 hover:text-blue-600 p-1 rounded-full hover:bg-blue-50 transition-colors">
+              <Info size={18} />
+            </button>
+
+      
+            <div className="invisible group-hover:visible absolute right-full mr-2 bottom-0 z-[9999] w-max min-w-[220px] bg-white border border-gray-200 shadow-2xl rounded-xl p-4 transition-opacity">
+              <h3 className="text-[10px] font-bold border-b border-gray-100 pb-2 mb-3 text-gray-400 uppercase tracking-widest">
+                Audit History
+              </h3>
+              <div className="whitespace-normal">
+                <AuditTrailContent bill={row.original} />
+              </div>
+
+             
+              <div className="absolute bottom-2 -right-1.5 w-3 h-3 bg-white border-t border-r border-gray-200 rotate-45"></div>
+            </div>
+          </div>
 
           <ActionMenu
             isOpen={openMenuId === row.original._id}

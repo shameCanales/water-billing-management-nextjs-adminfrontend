@@ -3,6 +3,7 @@ import { PaginationMeta } from "./pagination";
 export type ProcessorRole = "staff" | "manager";
 export type ProcessorStatus = "active" | "restricted";
 
+//full detail
 export interface Processor {
   _id: string;
   firstName: string;
@@ -14,6 +15,19 @@ export interface Processor {
   createdAt: string;
   updatedAt: string;
   __v: number;
+}
+
+// populate summary
+export type ProcessorSummary = Pick<
+  Processor,
+  "firstName" | "middleName" | "lastName" | "role"
+>;
+
+export interface CreateProcessorData extends Omit<
+  Processor,
+  "_id" | "createdAt" | "updatedAt" | "__v"
+> {
+  password: string;
 }
 
 export interface PaginatedProcessorResult {
@@ -31,15 +45,4 @@ export interface ProcessorQueryParams {
   sortOrder?: "asc" | "desc";
 }
 
-export interface CreateProcessorData {
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: ProcessorRole;
-  status: ProcessorStatus;
-}
-
-// 6. Edit Payload (Automatically makes all create fields optional)
 export interface EditProcessorData extends Partial<CreateProcessorData> {}

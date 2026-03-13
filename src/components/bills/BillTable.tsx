@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useGetAllBills } from "@/hooks/bills/useGetAllBills";
 import { getBillColumns } from "./BillColumns";
-import { Bill } from "@/types/bills";
+import { Bill, BillSummary } from "@/types/bills";
 import TableToolbar from "../ui/table/TableToolbar";
 import {
   PaginationContainer,
@@ -38,11 +38,11 @@ type BillStatusFilterType = "paid" | "unpaid" | "overdue" | "all";
 export default function BillsTable() {
   const dispatch = useDispatch<AppDispatch>();
 
-  const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
+  const [selectedBill, setSelectedBill] = useState<BillSummary | null>(null);
 
-  useEffect(() => {
-    console.log("Selected Bill:", selectedBill);
-  }, [selectedBill]);
+  // useEffect(() => {
+  //   console.log("Selected Bill:", selectedBill);
+  // }, [selectedBill]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -74,7 +74,7 @@ export default function BillsTable() {
 
   // Handler - follows ConnectionsTable pattern
   const handleView = useCallback(
-    (bill: Bill) => {
+    (bill: BillSummary) => {
       setSelectedBill(bill);
       dispatch(uiActions.openViewBillDetailsModal());
     },
@@ -111,7 +111,7 @@ export default function BillsTable() {
     <div className="space-y-6 font-sans mt-8">
       {/* Modals - follows ConnectionsTable pattern */}
       <AddBillModal />
-      <ViewBillDetailsModal billToView={selectedBill} />
+      {/* <ViewBillDetailsModal billToView={selectedBill} /> */}
 
       <TableToolbar
         searchTerm={searchTerm}
